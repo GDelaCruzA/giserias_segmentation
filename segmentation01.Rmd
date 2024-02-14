@@ -10,13 +10,14 @@ library ("rasterVis") |> suppressPackageStartupMessages()
 library ('OpenImageR') |> suppressPackageStartupMessages()
 library ('RImagePalette') |> suppressPackageStartupMessages()
 library("raster") |> suppressPackageStartupMessages()
+source(file = "indices_vegetacion_RGB.R")
 ```
 
 ## Índices de vegetación
 
 Se lee la imagen a analizar:
 
-```{r}
+```{r, warning = FALSE}
 (crops <- stack("~/giserias/conchalito-vuelo2/conchal_10.tif"))
 ```
 
@@ -29,48 +30,37 @@ plotRGB(crops, 1, 2, 3)
 Se definen las funciones auxiliares:
 
 ```{r}
-# Excess green vegetation index
-ExG <- function(img, i, j, k) {
-  bi <- img[[i]]
-  bj <- img[[j]]
-  bk <- img[[k]]
-  vi <- (2*bj-bi-bk) / (bj + bk +bi)
-  return(vi)
-}
+# from Matthias Forkel the palette for vegetation indices:
 
-# Normalized green red difference index
-NGRDI <- function(img, i, j, k) {
-  bi <- img[[i]]
-  bj <- img[[j]]
-  bk <- img[[k]]
-  vi <- (bj-bi) / (bj + bi)
-  return(vi)
-}
-
-# Thanks to Matthias Forkel we can use a nice palette for vegetation indices:
-colores <- function(n) {
+rampa <- function(n) {
     .fun <- colorRampPalette(c("chocolate4", "orange", "yellow", "grey", "green", "green3", "darkgreen"))
     col <- .fun(n)
     return(col)
 }
 
-
+# rescala entre 0 y 1 la matriz de los IV para OpenImageR
+normaIV <- function(x) {
+  min <- min(x)
+  max <- max(x)
+  return(1* (x - min) / (max - min))
+}
 ```
 
 Calculamos y vemos el índice de exceso de verde
 
-```{r}
-(egvi <- ExG(crops, 1, 2,3))
+```{r, warning = FALSE}
+(crops_egvi <- EGVI(crops))
 
 ```
 
 y visualizamos
 
 ```{r}
-cortes <- seq(-0.35, 1, by=0.1)
-cols <- colores(length(cortes)-1)
-##plot(ndvitrend, 2, col=cols, breaks=classbreaks)
-plot(egvir, 2, col = cols, breaks=cortes, main = "ExG Vegetation Index")
+intervalos <- seq(-0.35, 1, by=0.1)
+colores <- rampa(length(intervalos)-1)
+##plot(ndvitrend, 2, col=colores, breaks=classbreaks)
+plot(crops_egvi, 2, col = colores, breaks=intervalos, main = "ExG Vegetation Index")
+# guardamos en formato 
 ```
 
 ## Segmentación de imágenes
@@ -78,22 +68,29 @@ plot(egvir, 2, col = cols, breaks=cortes, main = "ExG Vegetation Index")
 Se usa el paquete {OpenImageR} que permite leer la imagen a evaluar en el formato adecuado al análisis con este paquete.
 
 ```{r}
+# con OpenImageR
 conchal <- readImage("~/giserias/conchalito-vuelo2/conchal_10.tif")
 ```
 
 Ahora usamos el algoritmo SLIC para una primera aproximación.
 
-```{r}
-conchal.slic = superpixels(input_image = conchal[, , 1:3], method = "slic", superpixel = 200,
-   compactness = 20, return_slic_data = TRUE,
-   return_labels = TRUE, write_slic = "",
-   verbose = FALSE)
+```{r, warning = FALSE}
+conchal.slic = superpixels(input_image = conchal[, , 1:3], 
+                           method = "slic", 
+                           superpixel = 200, 
+                           compactness = 20, 
+                           return_slic_data = TRUE, 
+                           return_labels = TRUE, 
+                           write_slic = "",
+                           verbose = TRUE)
 ```
 
 El otro algoritmo
 
-```{r}
-conchal.slico = superpixels(input_image = conchal[, , 1:3], method = "slico", superpixel = 150,
+```{r, warning = FALSE}
+conchal.slico = superpixels(input_image = conchal[, , 1:3], 
+                            method = "slico", 
+                            superpixel = 500,
    return_slic_data = TRUE,
    return_labels = TRUE, write_slic = "",
    verbose = FALSE)
@@ -108,4 +105,48 @@ imageShow(conchal.slic$slic_data)
 
 ```{r}
 imageShow(conchal.slico$slic_data)
+```
+
+El procesamiento adicional se haría con el módulo {SuperPixelImageSegmentation}, que se tratará más adelante. Por ahora seguimos con la parte 3. Data Analysis del tutorial.
+
+Primero ajustamos la imagen 'conchal' porque se lee con 4 capas
+
+```{r}
+conchal <- conchal[, , 1:3]
+imageShow(conchal)
+```
+
+Tomamos la imagen con el resultados del índice de vegetación y lo transformamos a matriz para poder tratarla con {OpenImageR}
+
+```{r}
+crops_egvi_mat <- matrix(crops_egvi@data@values,
+            nrow = crops_egvi@nrows,
+            ncol = crops_egvi@ncols, byrow = TRUE)
+
+# o mediante
+```
+
+Como en los índices hay valores negativos, para poder desplegarlos, los tenemos que normalizar a (0, 1) o (0, 255)...
+
+```{r}
+# crops_egvi_mat_norm <- normaIV(crops_egvi_mat)
+crops_egvi_mat_norm <- raster::as.matrix(crops_egvi)
+```
+
+Vemos como queda:
+
+```{r}
+imageShow(crops_egvi_mat_norm)
+```
+
+Como no fununcia, guardamos como imagen el resultado de los índices y luego la leemos directamente con la función readImage() de {OpenImageR}
+
+```{r}
+conchal_egvi_tif <- readImage("conchal_egvi.tif")
+```
+
+la vemos
+
+```{r}
+imageShow(conchal_egvi_tif)
 ```

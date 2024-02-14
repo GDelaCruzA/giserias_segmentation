@@ -23,10 +23,12 @@ plot(r)
 # se calculan los índices para la imagen
 r_egvi <- EGVI(r)
 plot(r_egvi, main = "ExG Vegetation Index sin rampa")
+# se guarda la imagen del índice como tif
+writeRaster(r_egvi, filename = "conchal_egvi.tif")
 
 # se definen los intervalos y colores para la imagen
 cortes <- seq(-0.35, 1, by=0.1)
-cols <- colores(length(cortes)-1)
+cols <- rampa(length(cortes)-1)
 
 plot(r_egvi, col = cols, breaks=cortes, main = "ExG Vegetation Index con rampa")
 
@@ -37,3 +39,4 @@ plot(r_tcvi, col = cols, breaks=cortes, main = "ExG Vegetation Index con rampa")
 
 ## Segmentación de imágenes
 
+r_egvi_mat <- 
