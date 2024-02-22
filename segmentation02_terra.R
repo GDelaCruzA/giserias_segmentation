@@ -6,18 +6,19 @@ library(OpenImageR) |> suppressPackageStartupMessages()
 source(file = "indices_vegetacion_RGB.R")
 
 # Thanks to Matthias Forkel we can use a nice palette for vegetation indices:
-colores <- function(n) {
+rampa <- function(n) {
   .fun <- colorRampPalette(c("chocolate4", "orange", "yellow", "grey", "green", "green3", "darkgreen"))
   col <- .fun(n)
   return(col)
 }
 
 # se lee la imagen
-r = rast("~/giserias/conchalito-vuelo2/RPubs_crops.jpg")
+# r = rast("~/giserias/conchalito-vuelo2/RPubs_crops.jpg")
 r = rast("~/giserias/conchalito-vuelo2/conchal_10.tif")
 
 # Se definen las bandas que se interpretarían como RGB y se visualiza
 RGB(r) <- 1:3
+# la función plot de r sin la función RGB() despliega todas las bandas en una sola imagen
 plot(r) 
 
 # se calculan los índices para la imagen
