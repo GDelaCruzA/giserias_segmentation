@@ -5,6 +5,12 @@
 # Derive Optimum Color Vegetation Indices for Leaf Nitrogen Concentration
 # Monitoring in Winter Wheat. Remote Sensing, 11, 2667; doi:10.3390/rs11222667
 #
+# ajustar todas las funciones para responder al tipo de datos de entrada:
+# class()[1] = array o (SpatRaster, RasterStack) para tomar las tres bandas del caso
+# 
+# Poner todo en una misma función...IndVeg(img = "imagen", indice = c(NGRDI, KI, RGRI, 
+# EGVI, TCVI), r = 1, g = 2, b = 3, ajuste = 0.4)
+# 
 # Normalized green red difference index
 NGRDI <- function(img, r = 1, g = 2, b = 3) {
   rband <- img[[r]]
@@ -33,11 +39,11 @@ RGRI <- function(img, r = 1, g = 2, b = 3) {
 }
 
 # Visible atmospherically resistance index
-RGRI <- function(img, r = 1, g = 2, b = 3) {
+VARI <- function(img, r = 1, g = 2, b = 3) {
   rband <- img[[r]]
   gband <- img[[g]]
   bband <- img[[b]]
-  indice <- rband / gband
+  indice <- (gband - rband) / (gband + rband - bband)
   return(indice)
 }
 

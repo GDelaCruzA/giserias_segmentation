@@ -46,7 +46,7 @@ normaIV <- function(x) {
 }
 ```
 
-Calculamos y vemos el índice de exceso de verde
+Calculamos el índice de exceso de verde
 
 ```{r, warning = FALSE}
 (crops_egvi <- EGVI(crops))
@@ -70,6 +70,7 @@ Se usa el paquete {OpenImageR} que permite leer la imagen a evaluar en el format
 ```{r}
 # con OpenImageR
 conchal <- readImage("~/giserias/conchalito-vuelo2/conchal_10.tif")
+#conchal <- readImage("~/giserias/conchalito-vuelo2/RPubs_crops.jpg")
 ```
 
 Ahora usamos el algoritmo SLIC para una primera aproximación.
@@ -93,7 +94,7 @@ conchal.slico = superpixels(input_image = conchal[, , 1:3],
                             superpixel = 500,
    return_slic_data = TRUE,
    return_labels = TRUE, write_slic = "",
-   verbose = FALSE)
+   verbose = TRUE)
 
 ```
 
@@ -103,20 +104,38 @@ Desplegamos el resultado:
 imageShow(conchal.slic$slic_data)
 ```
 
+Nota: posiblemente por el tamaño, no se despliega por ahora la imagen, pero si se repite la instrucción en la consola, se despliega en **Plots**
+
 ```{r}
 imageShow(conchal.slico$slic_data)
 ```
+
+Nota: Idem...
 
 El procesamiento adicional se haría con el módulo {SuperPixelImageSegmentation}, que se tratará más adelante. Por ahora seguimos con la parte 3. Data Analysis del tutorial.
 
 Primero ajustamos la imagen 'conchal' porque se lee con 4 capas
 
 ```{r}
-conchal <- conchal[, , 1:3]
-imageShow(conchal)
+conchal <- conchal[, , 1:3] # ajuste para el conchalito
+imageShow(conchal) # hasta aquí, OK
+#plotRGB(conchal)
+#plot(conchal)
+#plot(conchal, 2, main = "ExG Vegetation Index")
+
 ```
 
+Nota: idem
+
 Tomamos la imagen con el resultados del índice de vegetación y lo transformamos a matriz para poder tratarla con {OpenImageR}
+
+```{r}
+# OJO: las funciones de los indices no contemplan matrices(x, y, 1:3)
+str(conchal)
+conchal_egvi <- EGVI(conchal)
+str(conchal_egvi)
+
+```
 
 ```{r}
 crops_egvi_mat <- matrix(crops_egvi@data@values,
@@ -129,8 +148,11 @@ crops_egvi_mat <- matrix(crops_egvi@data@values,
 Como en los índices hay valores negativos, para poder desplegarlos, los tenemos que normalizar a (0, 1) o (0, 255)...
 
 ```{r}
-# crops_egvi_mat_norm <- normaIV(crops_egvi_mat)
-crops_egvi_mat_norm <- raster::as.matrix(crops_egvi)
+crops_egvi_mat_norm <- normaIV(crops_egvi_mat)
+# crops_egvi_mat_norm <- raster::as.matrix(crops_egvi)
+str(crops_egvi_mat_norm)
+min(crops_egvi_mat_norm)
+max(crops_egvi_mat_norm)
 ```
 
 Vemos como queda:
