@@ -1,0 +1,111 @@
+---
+title: "Segmentation of natural color images original"
+subtitle: " RPubs by RStudio "
+author: "Ivan Lizarazo"
+date: "15 June 2020"
+output: html_notebook
+---
+
+Ensayo de Segmentación de imágenes RGB, basado en el ejercicio publicado por [Ivan Lizarazo](https://rpubs.com/ials2un/segment_rgb) en formato de Notebook.
+
+```{r}
+library ("rasterVis") |> suppressPackageStartupMessages()
+library ('OpenImageR') |> suppressPackageStartupMessages()
+library ('RImagePalette') |> suppressPackageStartupMessages()
+library("raster") |> suppressPackageStartupMessages()
+source(file = "indices_vegetacion_RGB.R")
+```
+
+1.  Reading the image to analyze
+
+The image has been downloaded from the NASA Earth Observatory website. It illustrates the diverse agricultural landscape in the western part of Minas Gerais state in Brazil.
+
+Se lee la imagen a analizar:
+
+```{r, warning = FALSE}
+(crops <- stack("~/giserias/conchalito-vuelo2/conchal_10.tif"))
+```
+
+Vemos la imagen cargada:
+
+```{r}
+plotRGB(crops, 1, 2, 3)
+```
+
+## True Color Vegetation Indices
+
+Thanks to Matthias Forkel we can use a nice palette for vegetation indices:
+
+```{r}
+colores <- function(n) {
+    .fun <- colorRampPalette(c("chocolate4", "orange", "yellow", "grey", "green", "green3", "darkgreen"))
+    col <- .fun(n)
+    return(col)
+}
+
+```
+
+Let’s calculate the ExG index:
+
+```{r}
+# For the crops image red = 1, green=2, blue = 1.
+(egvi <- EGVI(crops, 1, 2,3))
+
+```
+
+Visualization time:
+
+```{r}
+cortes <- seq(-0.35, 1, by=0.1)
+cols <- colores(length(cortes)-1)
+##plot(ndvitrend, 2, col=cols, breaks=classbreaks)
+plot(egvi, 2, col = cols, breaks=cortes, main = "ExG Vegetation Index")
+
+```
+
+Let’s calculate the NGRDI index:
+
+```{r}
+# For the crops image red = 1, green=2, blue = 1.
+(ngvi <- NGRDI(crops, 1, 2,3))
+
+```
+
+Visualization time:
+
+```{r}
+cortes <- seq(-0.35, 1.0, by=0.1)
+cols <- colores(length(cortes)-1)
+##plot(ndvitrend, 2, col=cols, breaks=classbreaks)
+plot(ngvi, 2, col = cols, breaks=cortes, main = "NGRDI Vegetation Index")
+
+```
+
+## 2. Image segmentation
+
+Let’s read the image using the OpenImageR package:
+
+```{r}
+RGB.Color <- readImage("~/giserias/conchalito-vuelo2/conchal_10.tif")
+RGB.Color <- RGB.Color[, , 1:3] # lee cuatro capas en lugar de tres
+```
+
+Let’s use now SLIC for image segmentation. For detailed explanation of the code see the package’s vignette.
+
+```{r}
+Region.slic = superpixels(input_image = RGB.Color, method = "slic", superpixel = 80,
+   compactness = 30, return_slic_data = TRUE,
+   return_labels = TRUE, write_slic = "",
+   verbose = FALSE)
+
+```
+
+```{r}
+imageShow(Region.slic$slic_data)
+```
+
+## 3. Data analysis
+
+```{r}
+str(RGB.Color)
+```
