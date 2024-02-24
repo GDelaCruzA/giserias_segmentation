@@ -47,3 +47,6 @@ save.image(im = y, "img3.JPG")
 
 ## Segmentación de imágenes
 
+# se tiene que convertir de SpatRaster (los VI) a RasterLayer
+rasterlayer_conchal_egvi <- raster(rast_conchal_egvi)
+plot(rasterlayer_conchal_egvi, col = cols, breaks=cortes, main = "del SpatRaster Vegetation Index con rampa")
