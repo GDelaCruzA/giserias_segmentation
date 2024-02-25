@@ -1772,26 +1772,34 @@ source(file = &quot;indices_vegetacion_RGB.R&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<ol style="list-style-type: decimal">
-<li>Reading the image to analyze</li>
-</ol>
-<p>The image has been downloaded from the NASA Earth Observatory
-website. It illustrates the diverse agricultural landscape in the
-western part of Minas Gerais state in Brazil.</p>
+<p>##1. Leer la imagen para analizar</p>
+<p>La imagen ha sido descargada del sitio web del Observatorio de la
+Tierra de la NASA . Ilustra el diverso paisaje agrícola en la parte
+occidental del estado de Minas Gerais en Brasil.</p>
+<p>Se hace la asignación de la ruta para generalizar</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBhc2lnbmFyIGxhIGltYWdlbiBjb24gc3UgcnV0YSBcbiMgaW1hZ2VuIDwtIFwifi9QaWN0dXJlcy9iYWxhbmRyYS5qcGdcIlxuIyBpbWFnZW4gPC0gXCJ+L2dpc2VyaWFzL2NvbmNoYWxpdG8tdnVlbG8yL2NvbmNoYWxfMTBRLnRpZlwiXG5pbWFnZW4gPC0gXCJ+L2dpc2VyaWFzL2NvbmNoYWxpdG8tdnVlbG8yL1JQdWJzX2Nyb3BzLmpwZ1wiXG5gYGAifQ== -->
+<pre class="r"><code># asignar la imagen con su ruta 
+# imagen &lt;- &quot;~/Pictures/balandra.jpg&quot;
+# imagen &lt;- &quot;~/giserias/conchalito-vuelo2/conchal_10Q.tif&quot;
+imagen &lt;- &quot;~/giserias/conchalito-vuelo2/RPubs_crops.jpg&quot;</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <p>Se lee la imagen a analizar:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuKGNyb3BzIDwtIHN0YWNrKFwifi9naXNlcmlhcy9jb25jaGFsaXRvLXZ1ZWxvMi9jb25jaGFsXzEwUS50aWZcIikpXG4oY3JvcHMgPC0gc3RhY2soXCJ+L2dpc2VyaWFzL2NvbmNoYWxpdG8tdnVlbG8yL1JQdWJzX2Nyb3BzUS50aWZcIikpXG5gYGAifQ== -->
-<pre class="r"><code>(crops &lt;- stack(&quot;~/giserias/conchalito-vuelo2/conchal_10Q.tif&quot;))
-(crops &lt;- stack(&quot;~/giserias/conchalito-vuelo2/RPubs_cropsQ.tif&quot;))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuKGNyb3BzIDwtIHN0YWNrKGltYWdlbikpICMgZXMgdW4gUmFzdGVyU3RhY2sgY29uIGVzdHJ1Y3R1cmEgcGFyYSDDrW5kaWNlc1xuYGBgIn0= -->
+<pre class="r"><code>(crops &lt;- stack(imagen)) # es un RasterStack con estructura para índices</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Vemos la imagen cargada:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdFJHQihjcm9wcywgMSwgMiwgMylcbmBgYCJ9 -->
-<pre class="r"><code>plotRGB(crops, 1, 2, 3)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdFJHQihjcm9wcywgMSwgMiwgMykgIyB2aXN1YWxpemEgdW4gUmFzdGVyU3RhY2tcbmBgYCJ9 -->
+<pre class="r"><code>plotRGB(crops, 1, 2, 3) # visualiza un RasterStack</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1811,29 +1819,29 @@ indices:</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Let’s calculate the ExG index:</p>
+<p>Let’s calculate the EG index:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGb3IgdGhlIGNyb3BzIGltYWdlIHJlZCA9IDEsIGdyZWVuPTIsIGJsdWUgPSAxLlxuKGVndmkgPC0gRUdWSShjcm9wcywgMSwgMiwzKSlcblxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGb3IgdGhlIGNyb3BzIGltYWdlIHJlZCA9IDEsIGdyZWVuPTIsIGJsdWUgPSAxLlxuKGVndmkgPC0gRUdWSShjcm9wcywgMSwgMiwzKSkgIyBsb3Mgw61uZGljZXMgcmVncmVzYW4gdW4gUmFzdGVyTGF5ZXIgXG5cbmBgYCJ9 -->
 <pre class="r"><code># For the crops image red = 1, green=2, blue = 1.
-(egvi &lt;- EGVI(crops, 1, 2,3))
+(egvi &lt;- EGVI(crops, 1, 2,3)) # los índices regresan un RasterLayer 
 </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Visualization time:</p>
+<p>Visualizamos:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29ydGVzIDwtIHNlcSgtMC4zNSwgMSwgYnk9MC4xKVxuY29scyA8LSBjb2xvcmVzKGxlbmd0aChjb3J0ZXMpLTEpXG4jI3Bsb3QobmR2aXRyZW5kLCAyLCBjb2w9Y29scywgYnJlYWtzPWNsYXNzYnJlYWtzKVxucGxvdChlZ3ZpLCAxLCBjb2wgPSBjb2xzLCBicmVha3M9Y29ydGVzLCBtYWluID0gXCJFeEcgVmVnZXRhdGlvbiBJbmRleFwiKVxuXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29ydGVzIDwtIHNlcSgtMC4zNSwgMSwgYnk9MC4xKVxuY29scyA8LSBjb2xvcmVzKGxlbmd0aChjb3J0ZXMpLTEpXG4jIHBsb3QoKSBkZXNwbGllZ2EgdW4gUmFzdGVyTGF5ZXJcbnBsb3QoZWd2aSwgY29sID0gY29scywgYnJlYWtzPWNvcnRlcywgbWFpbiA9IFwiRUcgVmVnZXRhdGlvbiBJbmRleFwiKVxuXG5gYGAifQ== -->
 <pre class="r"><code>cortes &lt;- seq(-0.35, 1, by=0.1)
 cols &lt;- colores(length(cortes)-1)
-##plot(ndvitrend, 2, col=cols, breaks=classbreaks)
-plot(egvi, 1, col = cols, breaks=cortes, main = &quot;ExG Vegetation Index&quot;)
+# plot() despliega un RasterLayer
+plot(egvi, col = cols, breaks=cortes, main = &quot;EG Vegetation Index&quot;)
 </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Let’s calculate the NGRDI index:</p>
+<p>Calculamos el índice NGRDI:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGb3IgdGhlIGNyb3BzIGltYWdlIHJlZCA9IDEsIGdyZWVuPTIsIGJsdWUgPSAxLlxuKG5ndmkgPC0gTkdSREkoY3JvcHMsIDEsIDIsMykpXG5cbmBgYCJ9 -->
@@ -1843,14 +1851,14 @@ plot(egvi, 1, col = cols, breaks=cortes, main = &quot;ExG Vegetation Index&quot;
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Visualization time:</p>
+<p>Visualizamos:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29ydGVzIDwtIHNlcSgtMC4zNSwgMS4wLCBieT0wLjEpXG5jb2xzIDwtIGNvbG9yZXMobGVuZ3RoKGNvcnRlcyktMSlcbiMjcGxvdChuZHZpdHJlbmQsIDIsIGNvbD1jb2xzLCBicmVha3M9Y2xhc3NicmVha3MpXG5wbG90KG5ndmksIDEsIGNvbCA9IGNvbHMsIGJyZWFrcz1jb3J0ZXMsIG1haW4gPSBcIk5HUkRJIFZlZ2V0YXRpb24gSW5kZXhcIilcblxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29ydGVzIDwtIHNlcSgtMC4zNSwgMS4wLCBieT0wLjEpXG5jb2xzIDwtIGNvbG9yZXMobGVuZ3RoKGNvcnRlcyktMSlcbiMjcGxvdChuZHZpdHJlbmQsIDIsIGNvbD1jb2xzLCBicmVha3M9Y2xhc3NicmVha3MpXG5wbG90KG5ndmksIGNvbCA9IGNvbHMsIGJyZWFrcz1jb3J0ZXMsIG1haW4gPSBcIk5HUkRJIFZlZ2V0YXRpb24gSW5kZXhcIilcblxuYGBgIn0= -->
 <pre class="r"><code>cortes &lt;- seq(-0.35, 1.0, by=0.1)
 cols &lt;- colores(length(cortes)-1)
 ##plot(ndvitrend, 2, col=cols, breaks=classbreaks)
-plot(ngvi, 1, col = cols, breaks=cortes, main = &quot;NGRDI Vegetation Index&quot;)
+plot(ngvi, col = cols, breaks=cortes, main = &quot;NGRDI Vegetation Index&quot;)
 </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -1858,22 +1866,24 @@ plot(ngvi, 1, col = cols, breaks=cortes, main = &quot;NGRDI Vegetation Index&quo
 </div>
 <div id="image-segmentation" class="section level2">
 <h2>2. Image segmentation</h2>
-<p>Let’s read the image using the OpenImageR package:</p>
+<p>Leamos la imagen usando el paquete OpenImageR:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUkdCLkNvbG9yIDwtIHJlYWRJbWFnZShcIn4vZ2lzZXJpYXMvY29uY2hhbGl0by12dWVsbzIvY29uY2hhbF8xMC50aWZcIilcbiNSR0IuQ29sb3IgPC0gcmVhZEltYWdlKFwifi9naXNlcmlhcy9jb25jaGFsaXRvLXZ1ZWxvMi9SUHVic19jcm9wcy5qcGdcIilcbiNSR0IuQ29sb3IgPC0gUkdCLkNvbG9yWywgLCAxOjNdICMgbGVlIGN1YXRybyBjYXBhcyBlbiBsdWdhciBkZSB0cmVzXG5gYGAifQ== -->
-<pre class="r"><code>RGB.Color &lt;- readImage(&quot;~/giserias/conchalito-vuelo2/conchal_10.tif&quot;)
-#RGB.Color &lt;- readImage(&quot;~/giserias/conchalito-vuelo2/RPubs_crops.jpg&quot;)
-#RGB.Color &lt;- RGB.Color[, , 1:3] # lee cuatro capas en lugar de tres</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI1JHQi5Db2xvciA8LSBSR0IuQ29sb3JbLCAsIDE6M10gIyBzaSBsZWUgY3VhdHJvIGNhcGFzIGVuIGx1Z2FyIGRlIHRyZXNcblJHQi5Db2xvciA8LSByZWFkSW1hZ2UoaW1hZ2VuKSAjIExhcmdlIGFycmF5XG4jIE5vdGE6IGxhcyBmdW5jaW9uZXMgcmVhZEpQR0UsIHJlYWRQTkcgbGVlbiBhIG1hdHJpeiBsYSBpbWFnZW4sIHRhbCB5IGNvbW8gbG8gaGFjZVxuIyB7T3BlbkltYWdlUn06OnJlYWRJbWFnZSgpIGxlZSBhIG1hdHJpeiBvIGFycmF5IGxvcyBmb3JtYXRvcyAgLnBuZywgLmpwZWcsIC5qcGcsIC50aWYgLnRpZmZcbmBgYCJ9 -->
+<pre class="r"><code>#RGB.Color &lt;- RGB.Color[, , 1:3] # si lee cuatro capas en lugar de tres
+RGB.Color &lt;- readImage(imagen) # Large array
+# Nota: las funciones readJPGE, readPNG leen a matriz la imagen, tal y como lo hace
+# {OpenImageR}::readImage() lee a matriz o array los formatos  .png, .jpeg, .jpg, .tif .tiff</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Let’s use now SLIC for image segmentation. For detailed explanation
-of the code see the package’s vignette.</p>
+<p>Usemos ahora SLIC para la segmentación de imágenes. Para obtener una
+explicación detallada del código, consultar la viñeta del paquete.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUmVnaW9uLnNsaWMgPSBzdXBlcnBpeGVscyhpbnB1dF9pbWFnZSA9IFJHQi5Db2xvciwgbWV0aG9kID0gXCJzbGljXCIsIHN1cGVycGl4ZWwgPSA4MCxcbiAgIGNvbXBhY3RuZXNzID0gMzAsIHJldHVybl9zbGljX2RhdGEgPSBUUlVFLFxuICAgcmV0dXJuX2xhYmVscyA9IFRSVUUsIHdyaXRlX3NsaWMgPSBcIlwiLFxuICAgdmVyYm9zZSA9IEZBTFNFKVxuXG5gYGAifQ== -->
-<pre class="r"><code>Region.slic = superpixels(input_image = RGB.Color, method = &quot;slic&quot;, superpixel = 80,
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBzdXBlcnBpeGVsIHJlY2liZSB1biBMYXJnZSBhcnJheSBvIGltYWdlbiBlbiBmb3JtYSBkZSBtYXRyaXogY29uIHRyZXMgY2FwYXMgZGUgZm9uZG9cblJlZ2lvbi5zbGljID0gc3VwZXJwaXhlbHMoaW5wdXRfaW1hZ2UgPSBSR0IuQ29sb3IsIG1ldGhvZCA9IFwic2xpY1wiLCBzdXBlcnBpeGVsID0gODAsXG4gICBjb21wYWN0bmVzcyA9IDMwLCByZXR1cm5fc2xpY19kYXRhID0gVFJVRSxcbiAgIHJldHVybl9sYWJlbHMgPSBUUlVFLCB3cml0ZV9zbGljID0gXCJcIixcbiAgIHZlcmJvc2UgPSBGQUxTRSlcblxuYGBgIn0= -->
+<pre class="r"><code># superpixel recibe un Large array o imagen en forma de matriz con tres capas de fondo
+Region.slic = superpixels(input_image = RGB.Color, method = &quot;slic&quot;, superpixel = 80,
    compactness = 30, return_slic_data = TRUE,
    return_labels = TRUE, write_slic = &quot;&quot;,
    verbose = FALSE)
@@ -1901,21 +1911,321 @@ of the code see the package’s vignette.</p>
 <p>Let’s get a matrix with NGRDI values:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmd2aVxuZWd2aVxuZWd2aUBkYXRhQHZhbHVlc1xubmd2aUBkYXRhQHZhbHVlc1xubmd2aS5tYXQgPC0gbWF0cml4KG5ndmlAZGF0YUB2YWx1ZXMsXG4gICAgICAgICAgICBucm93ID0gbmd2aUBucm93cyxcbiAgICAgICAgICAgIG5jb2wgPSBuZ3ZpQG5jb2xzLCBieXJvdyA9IFRSVUUpXG5taW4obmd2aS5tYXQpXG5tYXgobmd2aS5tYXQpXG5gYGAifQ== -->
-<pre class="r"><code>ngvi
-egvi
-egvi@data@values
-ngvi@data@values
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBuZ3ZpXG4jIGVndmlcbiMgZWd2aUBkYXRhQHZhbHVlc1xuIyBuZ3ZpQGRhdGFAdmFsdWVzXG5uZ3ZpLm1hdCA8LSBtYXRyaXgobmd2aUBkYXRhQHZhbHVlcyxcbiAgICAgICAgICAgIG5yb3cgPSBuZ3ZpQG5yb3dzLFxuICAgICAgICAgICAgbmNvbCA9IG5ndmlAbmNvbHMsIGJ5cm93ID0gVFJVRSlcbiMgbWluKG5ndmkubWF0KVxuIyBtYXgobmd2aS5tYXQpXG5gYGAifQ== -->
+<pre class="r"><code># ngvi
+# egvi
+# egvi@data@values
+# ngvi@data@values
 ngvi.mat &lt;- matrix(ngvi@data@values,
             nrow = ngvi@nrows,
             ncol = ngvi@ncols, byrow = TRUE)
-min(ngvi.mat)
-max(ngvi.mat)</code></pre>
+# min(ngvi.mat)
+# max(ngvi.mat)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>La función imageShow() trabaja con datos que están en el rango de
+ocho bits 0 – 255 o en el rango [0,1] (es decir, el rango de x entre 0 y
+1 inclusive). Sin embargo, no funciona con valores NGRVI si estos
+valores son negativos. Por lo tanto, escalaremos los valores de NGRDI a
+[0,1].</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI3Jlc2NhbGUgYmV0d2VlbiAwIGFuZCAxOyB2ZXIgbGEgZnVuY2lvbiB7T3BlbkltYWdlUn06Ok5vcm1hbGl6ZU9iamVjdCgpIHF1ZSBzZSB1c2EgbWFzIGFiYWpvXG5ub3JtYWxpemUgPC0gZnVuY3Rpb24oeCkge1xuICBtaW4gPC0gbWluKHgpXG4gIG1heCA8LSBtYXgoeClcbiAgcmV0dXJuKDEqICh4IC0gbWluKSAvIChtYXggLSBtaW4pKVxufVxuYGBgIn0= -->
+<pre class="r"><code>#rescale between 0 and 1; ver la funcion {OpenImageR}::NormalizeObject() que se usa mas abajo
+normalize &lt;- function(x) {
+  min &lt;- min(x)
+  max &lt;- max(x)
+  return(1* (x - min) / (max - min))
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmd2aS5tYXRfbm9ybSA8LSBub3JtYWxpemUobmd2aS5tYXQpXG5gYGAifQ== -->
+<pre class="r"><code>ngvi.mat_norm &lt;- normalize(ngvi.mat)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaW1hZ2VTaG93KG5ndmkubWF0X25vcm0pXG5gYGAifQ== -->
+<pre class="r"><code>imageShow(ngvi.mat_norm)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmd2aS5kYXRhIDwtIFJHQi5Db2xvclxuIyBuZ3ZpLmRhdGFbLCwxXSA8LSBuZ3ZpLm1hdF9ub3JtXG4jIG5ndmkuZGF0YVssLDJdIDwtIG5ndmkubWF0X25vcm1cbiMgbmd2aS5kYXRhWywsM10gPC0gbmd2aS5tYXRfbm9ybVxuYGBgIn0= -->
+<pre class="r"><code>ngvi.data &lt;- RGB.Color
+# ngvi.data[,,1] &lt;- ngvi.mat_norm
+# ngvi.data[,,2] &lt;- ngvi.mat_norm
+# ngvi.data[,,3] &lt;- ngvi.mat_norm</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>En la siguiente sección describiremos cómo crear una segmentación de
+imágenes de los datos del NGRDI y cómo utilizar el análisis de
+conglomerados para crear una clasificación del terreno</p>
+</div>
+<div id="image-classification" class="section level2">
+<h2>4. Image classification</h2>
+<p>Aquí se muestra una aplicación de la función superpixels() para la
+clasificación de la cobertura terrestre de los datos NGRDI.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmd2aS44MCA9IHN1cGVycGl4ZWxzKGlucHV0X2ltYWdlID0gbmd2aS5kYXRhLFxuICAgbWV0aG9kID0gXCJzbGljXCIsIHN1cGVycGl4ZWwgPSA4MCxcbiAgIGNvbXBhY3RuZXNzID0gMzAsIHJldHVybl9zbGljX2RhdGEgPSBUUlVFLFxuICAgcmV0dXJuX2xhYmVscyA9IFRSVUUsIHdyaXRlX3NsaWMgPSBcIlwiLFxuICAgdmVyYm9zZSA9IFRSVUUpXG5gYGAifQ== -->
+<pre class="r"><code>ngvi.80 = superpixels(input_image = ngvi.data,
+   method = &quot;slic&quot;, superpixel = 80,
+   compactness = 30, return_slic_data = TRUE,
+   return_labels = TRUE, write_slic = &quot;&quot;,
+   verbose = TRUE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaW1hZ2VTaG93KG5ndmkuODAkc2xpY19kYXRhKVxuYGBgIn0= -->
+<pre class="r"><code>imageShow(ngvi.80$slic_data)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Aquí la estructura del objeto ngvi.80.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKG5ndmkuODApXG5gYGAifQ== -->
+<pre class="r"><code>str(ngvi.80)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Es una lista con dos elementos, slic_data, una matriz tridimensional
+de datos de color de píxeles (no normalizados) y etiquetas, una matriz
+cuyos elementos corresponden a los píxeles de la imagen. El nombre del
+segundo elemento sugiere que puede contener valores que identifican el
+superpíxel al que pertenece cada píxel. Veamos si esto es cierto.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc29ydCh1bmlxdWUoYXMudmVjdG9yKG5ndmkuODAkbGFiZWxzKSkpXG5gYGAifQ== -->
+<pre class="r"><code>sort(unique(as.vector(ngvi.80$labels)))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Hay 72 etiquetas únicas. Aunque la llamada a superpixels() especificó
+80 superpíxeles, la función generó 72. Podemos ver qué píxeles tienen el
+valor de etiqueta 0 estableciendo los valores de todos los demás píxeles
+en [255, 255, 255], lo que se trazará como blanco.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUjAgPC0gbmd2aS44MFxuZm9yIChpIGluIDE6bnJvdyhSMCRsYWJlbCkpXG4gICAgZm9yIChqIGluIDE6bmNvbChSMCRsYWJlbCkpXG4gICAgICAgaWYgKFIwJGxhYmVsW2ksal0gIT0gMClcbiAgICAgICAgICBSMCRzbGljX2RhdGFbaSxqLF0gPC0gYygyNTUsMjU1LDI1NSlcbmBgYCJ9 -->
+<pre class="r"><code>R0 &lt;- ngvi.80
+for (i in 1:nrow(R0$label))
+    for (j in 1:ncol(R0$label))
+       if (R0$label[i,j] != 0)
+          R0$slic_data[i,j,] &lt;- c(255,255,255)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaW1hZ2VTaG93KFIwJHNsaWNfZGF0YSlcblxuYGBgIn0= -->
+<pre class="r"><code>imageShow(R0$slic_data)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>La operación aísla el superpíxel en la esquina superior derecha de la
+imagen, junto con la porción correspondiente del límite. Podemos
+utilizar fácilmente este enfoque para determinar qué valor de
+ngvi.80$label corresponde a qué superpíxel. Ahora tratemos con el
+límite. Una pequeña exploración del objeto ngvi.80 sugiere que los
+píxeles en el límite tienen los tres componentes iguales a cero.
+Aislamos y trazamos todos esos píxeles coloreando todos los demás
+píxeles de blanco.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQmRyeSA8LSBuZ3ZpLjgwXG4gIGZvciAoaSBpbiAxOm5yb3coQmRyeSRsYWJlbCkpXG4gICBmb3IgKGogaW4gMTpuY29sKEJkcnkkbGFiZWwpKVxuICAgICBpZiAoIShCZHJ5JHNsaWNfZGF0YVtpLGosMV0gPT0gMCAmXG4gICAgIEJkcnkkc2xpY19kYXRhW2ksaiwyXSA9PSAwICZcbiAgICAgICBCZHJ5JHNsaWNfZGF0YVtpLGosM10gPT0gMCkpXG4gICAgICAgQmRyeSRzbGljX2RhdGFbaSxqLF0gPC0gYygyNTUsMjU1LDI1NSlcblxuYGBgIn0= -->
+<pre class="r"><code>Bdry &lt;- ngvi.80
+  for (i in 1:nrow(Bdry$label))
+   for (j in 1:ncol(Bdry$label))
+     if (!(Bdry$slic_data[i,j,1] == 0 &amp;
+     Bdry$slic_data[i,j,2] == 0 &amp;
+       Bdry$slic_data[i,j,3] == 0))
+       Bdry$slic_data[i,j,] &lt;- c(255,255,255)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQmRyeS5ub3JtIDwtIE5vcm1hbGl6ZU9iamVjdChCZHJ5JHNsaWNfZGF0YSlcbmltYWdlU2hvdyhCZHJ5JHNsaWNfZGF0YSlcblxuYGBgIn0= -->
+<pre class="r"><code>Bdry.norm &lt;- NormalizeObject(Bdry$slic_data)
+imageShow(Bdry$slic_data)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>La figura muestra que efectivamente se han identificado los píxeles
+límite. Hay que tener en cuenta que la función imageShow() muestra estos
+píxeles en blanco con un borde negro, en lugar de negro puro.</p>
+<p>Habiendo realizado un análisis preliminar, podemos organizar nuestro
+proceso de segmentación en dos pasos.</p>
+<p>El primer paso será reemplazar cada uno de los superpíxeles generados
+por la función superpixels() de OpenImageR por uno en el que cada píxel
+tenga el mismo valor, correspondiente a una medida de tendencia central
+(p. ej., la media, mediana o moda) del superpíxel original.</p>
+<p>El segundo paso será utilizar el procedimiento de agrupamiento no
+supervisado de K-medias para organizar los superpíxeles del paso 1 en un
+conjunto de grupos y darle a cada grupo un valor correspondiente a una
+medida de tendencia central del grupo.</p>
+<p>Utilizaremos la función make.segments() para realizar la
+segmentación. El primer argumento de make.segments() es el objeto de
+superpíxeles y el segundo es la medida funcional de tendencia central.
+Aunque en este caso cada uno de los tres colores del objeto ngvi.80
+tiene los mismos valores, esto puede no ser cierto para todas las
+aplicaciones, por lo que la función analiza cada color por separado.</p>
+<p>La función, escrita por Richard Plant, es la siguiente:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBJZGVudGlmeSBhIG1lYXN1cmUgb2YgY2VudHJhbCB0ZW5kZW5jeSBvZiBlYWNoIHN1cGVycGl4ZWxcbm1ha2Uuc2VnbWVudHMgPC0gZnVuY3Rpb24oeCwgZnRuKXtcbiMgVGhlIGFyZ3VtZW50IGZ0biBpcyBhbnkgZnVuY3Rpb25hbCBtZWFzdXJlIG9mIGNlbnRyYWwgdGVuZGVuY3lcbiAgIHogPC0geFxuIyBGb3IgZWFjaCBpZGVudGlmaWVkIHN1cGVycGl4ZWwsIGNvbXB1dGUgbWVhc3VyZSBvZiBjZW50cmFsIHRlbmRlbmN5XG4gICBmb3IgKGsgaW4gdW5pcXVlKGFzLnZlY3Rvcih4JGxhYmVscykpKXtcbiMgSWRlbnRpZnkgbWVtYmVycyBvZiB0aGUgc3VwZXJwaXhlbCBoYXZpbmcgdGhlIGdpdmVuIGxhYmVsXG4gICAgICBpbi5zdXBlciA8LSBtYXRyaXgoMCwgbnJvdyh4JGxhYmVsKSwgbmNvbCh4JGxhYmVsKSlcbiAgICAgIGZvciAoaSBpbiAxOm5yb3coeCRsYWJlbCkpXG4gICAgICAgICBmb3IgKGogaW4gMTpuY29sKHgkbGFiZWwpKVxuICAgICAgICAgICAgaWYgKHgkbGFiZWxbaSxqXSA9PSBrKVxuICAgICAgICAgICAgICAgaW4uc3VwZXJbaSxqXSA8LSAxXG4jSWRlbnRpZnkgdGhlIGJvdW5kYXJ5IGNlbGxzIGFzIGhhdmluZyBhbGwgdmFsdWVzIDBcbiAgICAgIG9uLmJvdW5kIDwtIG1hdHJpeCgwLCBucm93KHgkbGFiZWwpLCBuY29sKHgkbGFiZWwpKVxuICAgICAgZm9yIChpIGluIDE6bnJvdyh4JGxhYmVsKSlcbiAgICAgICAgIGZvciAoaiBpbiAxOm5jb2woeCRsYWJlbCkpXG4gICAgICAgICAgICBpZiAoaW4uc3VwZXJbaSxqXSA9PSAxKXtcbiAgICAgICAgICAgICAgIGlmICh4JHNsaWNfZGF0YVtpLGosMV0gPT0gMCAmIHgkc2xpY19kYXRhW2ksaiwyXSA9PSAwIFxuICAgICAgICAgICAgICAgICAgJiB4JHNsaWNfZGF0YVtpLGosM10gPT0gMClcbiAgICAgICAgICAgICAgICAgICAgIG9uLmJvdW5kW2ksal0gPC0gMVxuICAgICAgICAgfVxuI0lkZW50aWZ5IHRoZSBzdXBlcnBpeGVsIGNlbGxzIG5vdCBvbiB0aGUgYm91bmRhcnlcbiAgICAgIHN1cC5kYXRhIDwtIG1hdHJpeCgwLCBucm93KHgkbGFiZWwpLCBuY29sKHgkbGFiZWwpKVxuICAgICAgICAgZm9yIChpIGluIDE6bnJvdyh4JGxhYmVsKSlcbiAgICAgICAgIGZvciAoaiBpbiAxOm5jb2woeCRsYWJlbCkpXG4gICAgICAgICAgICBpZiAoaW4uc3VwZXJbaSxqXSA9PSAxICYgb24uYm91bmRbaSxqXSA9PSAwKVxuICAgICAgICAgICAgICAgc3VwLmRhdGFbaSxqXSA8LSAxXG4jIENvbXB1dGUgdGhlIG1lYXN1cmUgb2YgY2VudHJhbCB0ZW5kZW5jeSBvZiB0aGUgY2VsbHMgaW4gUiwgRywgQlxuICAgICAgZm9yIChuIGluIDE6Myl7XG4jIENyZWF0ZSBhIG1hdHJpeCBNIG9mIHRoZSBzYW1lIHNpemUgYXMgdGhlIG1hdHJpeCBvZiBzdXBlcnBpeGVsIHZhbHVlc1xuICAgICAgICAgTSA8LSBtYXRyaXgoMCwgZGltKHgkc2xpY19kYXRhKVsxXSwgZGltKHgkc2xpY19kYXRhKVsyXSkgXG4gICAgICAgICBmb3IgKGkgaW4gMTpucm93KHgkbGFiZWwpKVxuICAgICAgICAgICAgZm9yIChqIGluIDE6bmNvbCh4JGxhYmVsKSlcbiMgQXNzaWduIHRvIE0gdGhlIHZhbHVlcyBpbiB0aGUgc3VwZXJwaXhlbFxuICAgICAgICAgICAgICAgaWYgKHN1cC5kYXRhW2ksal0gPT0gMSkgTVtpLGpdIDwtIHgkc2xpY19kYXRhW2ksaixuXVxuICAgICAgICAgIGlmIChsZW5ndGgoTVt3aGljaChNID4gMCAmIE0gPCAyNTUpXSkgPiAwKVxuIyBDb21wdXRlIHRoZSBtZWFzdXJlIG9mIGNlbnRyYWwgdGVuZGVuY3lcbiAgICAgICAgICAgIGZ0bi5uIDwtIHJvdW5kKGZ0bihNW3doaWNoKE0gPiAwICYgTSA8IDI1NSldKSwgMClcbiAgICAgICAgIGVsc2VcbiAgICAgICAgICAgIGZ0bi5uIDwtIDBcbiAgICAgICAgIGZvciAoaSBpbiAxOm5yb3coeCRsYWJlbCkpXG4gICAgICAgICAgICBmb3IgKGogaW4gMTpuY29sKHgkbGFiZWwpKVxuICAgICAgICAgICAgICAgaWYgKGluLnN1cGVyW2ksal0gPT0gMSkgeiRzbGljX2RhdGFbaSxqLG5dIDwtIGZ0bi5uXG4gICAgICAgICAgIH1cbiAgICAgIH1cbiAgIHJldHVybih6KVxuICAgfVxuYGBgIn0= -->
+<pre class="r"><code># Identify a measure of central tendency of each superpixel
+make.segments &lt;- function(x, ftn){
+# The argument ftn is any functional measure of central tendency
+   z &lt;- x
+# For each identified superpixel, compute measure of central tendency
+   for (k in unique(as.vector(x$labels))){
+# Identify members of the superpixel having the given label
+      in.super &lt;- matrix(0, nrow(x$label), ncol(x$label))
+      for (i in 1:nrow(x$label))
+         for (j in 1:ncol(x$label))
+            if (x$label[i,j] == k)
+               in.super[i,j] &lt;- 1
+#Identify the boundary cells as having all values 0
+      on.bound &lt;- matrix(0, nrow(x$label), ncol(x$label))
+      for (i in 1:nrow(x$label))
+         for (j in 1:ncol(x$label))
+            if (in.super[i,j] == 1){
+               if (x$slic_data[i,j,1] == 0 &amp; x$slic_data[i,j,2] == 0 
+                  &amp; x$slic_data[i,j,3] == 0)
+                     on.bound[i,j] &lt;- 1
+         }
+#Identify the superpixel cells not on the boundary
+      sup.data &lt;- matrix(0, nrow(x$label), ncol(x$label))
+         for (i in 1:nrow(x$label))
+         for (j in 1:ncol(x$label))
+            if (in.super[i,j] == 1 &amp; on.bound[i,j] == 0)
+               sup.data[i,j] &lt;- 1
+# Compute the measure of central tendency of the cells in R, G, B
+      for (n in 1:3){
+# Create a matrix M of the same size as the matrix of superpixel values
+         M &lt;- matrix(0, dim(x$slic_data)[1], dim(x$slic_data)[2]) 
+         for (i in 1:nrow(x$label))
+            for (j in 1:ncol(x$label))
+# Assign to M the values in the superpixel
+               if (sup.data[i,j] == 1) M[i,j] &lt;- x$slic_data[i,j,n]
+          if (length(M[which(M &gt; 0 &amp; M &lt; 255)]) &gt; 0)
+# Compute the measure of central tendency
+            ftn.n &lt;- round(ftn(M[which(M &gt; 0 &amp; M &lt; 255)]), 0)
+         else
+            ftn.n &lt;- 0
+         for (i in 1:nrow(x$label))
+            for (j in 1:ncol(x$label))
+               if (in.super[i,j] == 1) z$slic_data[i,j,n] &lt;- ftn.n
+           }
+      }
+   return(z)
+   }</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Aquí está la aplicación de esa función al objeto ngvi.80 con el
+segundo argumento configurado como mean.</p>
+<p>Podemos ver el resultado.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmd2aS5tZWFucyA8LSBtYWtlLnNlZ21lbnRzKG5ndmkuODAsIG1lYW4pXG5pbWFnZVNob3cobmd2aS5tZWFucyRzbGljX2RhdGEpXG5gYGAifQ== -->
+<pre class="r"><code>ngvi.means &lt;- make.segments(ngvi.80, mean)
+imageShow(ngvi.means$slic_data)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>El siguiente paso es desarrollar grupos que representen tipos de
+cobertura terrestre identificables. En un proyecto real, el
+procedimiento sería recopilar un conjunto de datos reales del sitio,
+pero esa opción no está disponible para nosotros. En su lugar,
+trabajaremos con la reproducción en color real de la foto del
+ejemplo.</p>
+<p>La cobertura del suelo se puede subdividir utilizando K-medias en
+cualquier número de tipos. Tenga en cuenta que no se ha interpretado
+aquí la relación entre los grupos de K-medias y las clases de cobertura
+del suelo existentes en el sitio del ejemplo. Sin embargo, en una
+aplicación real, esta tarea es imprescindible.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2V0LnNlZWQoMTIzKVxuIyBPSk86IGVuIGxhIGZ1bmNpw7NuIGttZWFucyBzZSBlc3RhYmxlY2UgZWwgbsO6bWVybyBkZSBjbGFzZXMgc3Vic2VjdWVudGVzXG5uY2xhc3MgPC0gMTBcbm5ndmkuY2x1cyA8LSAga21lYW5zKGFzLnZlY3RvcihuZ3ZpLm1lYW5zJHNsaWNfZGF0YVssLDFdKSwgbmNsYXNzKVxudmVnZS5jbGFzcyA8LSBtYXRyaXgobmd2aS5jbHVzJGNsdXN0ZXIsXG4gICAgICAgICAgICAgICAgICAgICBucm93ID0gbmd2aUBucm93cywgXG4gICAgICAgICAgICAgICAgICAgICBuY29sID0gbmd2aUBuY29scywgYnlyb3cgPSBGQUxTRSlcbmNsYXNzLnJhcyA8LSByYXN0ZXIodmVnZS5jbGFzcywgXG4gICAgICAgICAgICAgICAgICAgIHhtbiA9IGNyb3BzQGV4dGVudEB4bWluLFxuICAgICAgICAgICAgICAgICAgICB4bXggPSBjcm9wc0BleHRlbnRAeG1heCwgXG4gICAgICAgICAgICAgICAgICAgIHltbiA9IGNyb3BzQGV4dGVudEB5bWluLCBcbiAgICAgICAgICAgICAgICAgICAgeW14ID0gY3JvcHNAZXh0ZW50QHltYXgsIFxuICAgICAgICAgICAgICAgICAgICBjcnMgPSBjcnMoY3JvcHMpKVxuYGBgIn0= -->
+<pre class="r"><code>set.seed(123)
+# OJO: en la función kmeans se establece el número de clases subsecuentes
+nclass &lt;- 10
+ngvi.clus &lt;-  kmeans(as.vector(ngvi.means$slic_data[,,1]), nclass)
+vege.class &lt;- matrix(ngvi.clus$cluster,
+                     nrow = ngvi@nrows, 
+                     ncol = ngvi@ncols, byrow = FALSE)
+class.ras &lt;- raster(vege.class, 
+                    xmn = crops@extent@xmin,
+                    xmx = crops@extent@xmax, 
+                    ymn = crops@extent@ymin, 
+                    ymx = crops@extent@ymax, 
+                    crs = crs(crops))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>A continuación podemos usar la función {raster} ratify() para asignar
+niveles de factores descriptivos a los grupos o clases definidas.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2xhc3MucmFzIDwtIHJhdGlmeShjbGFzcy5yYXMpXG5yYXQuY2xhc3MgPC0gbGV2ZWxzKGNsYXNzLnJhcylbWzFdXVxuYGBgIn0= -->
+<pre class="r"><code>class.ras &lt;- ratify(class.ras)
+rat.class &lt;- levels(class.ras)[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBldmVudHVhbG1lbnRlLCBzZSBhc2lnbmFuIGV0aXF1ZXRhcyBwYXJhIGNhZGEgdW5hIGRlIGxhcyBjbGFzZXMgZGVsIHJlc3VsdGFkbztcbiMgZW4gZWwgY2FzbyBkZWwgZWplbXBsbywgc2UgYXBsaWNhOlxuIyByYXQuY2xhc3MkbGFuZGNvdmVyIDwtIGMoXCJMQyAxMFwiLCBcIkxDIDA5XCIsIFwiTEMgMDhcIiwgXCJMQyAwN1wiLCBcIkxDIDA2XCIsIFwiTEMgMDVcIiwgXCJMQyAwNFwiLCBcIkxDIDAzXCIsIFwiTEMgMDJcIiwgXCJMQyAwMVwiKVxucmF0LmNsYXNzJGxhbmRjb3ZlciA8LSBwYXN0ZShcIkNsYXNlXCIsIG5jbGFzczoxKVxuYGBgIn0= -->
+<pre class="r"><code># eventualmente, se asignan etiquetas para cada una de las clases del resultado;
+# en el caso del ejemplo, se aplica:
+# rat.class$landcover &lt;- c(&quot;LC 10&quot;, &quot;LC 09&quot;, &quot;LC 08&quot;, &quot;LC 07&quot;, &quot;LC 06&quot;, &quot;LC 05&quot;, &quot;LC 04&quot;, &quot;LC 03&quot;, &quot;LC 02&quot;, &quot;LC 01&quot;)
+rat.class$landcover &lt;- paste(&quot;Clase&quot;, nclass:1)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI0NyZWFyIHVuYSBwYWxldHRlIGNvbiBlbCBuw7ptZXJvIGRlIGNvbG9yZXMgY29ycmVzcG9uZGllbnRlcyBhbCByZXN1bHRhZG8gZW4ga21lYW5zXG4jIHNlIGxlZSBkZSBudWV2byBsYSBpbWFnZW4gb3JpZ2luYWwgY29tbyByYXN0ZXIgY29tdW4gZW4gTGFyZ2UgYXJyYXkgeCwgeSwgMTozXG4jIG5jcm9wcyA8LSAganBlZzo6cmVhZEpQRUcoXCJ+L1BpY3R1cmVzL2JhbGFuZHJhLmpwZ1wiKVxubmNyb3BzIDwtIHJlYWRJbWFnZShpbWFnZW4pICMgcGFyYSBubyBpbnZvY2FyIG90cmEgbGlicmVyw61hXG5jcm9wcy5wYWwgPC0gaW1hZ2VfcGFsZXR0ZShuY3JvcHMsIG49bmNsYXNzKVxuIyBOb3RhOiBsYXMgZnVuY2lvbmVzIHJlYWRKUEdFLCByZWFkUE5HIGxlZW4gYSBtYXRyaXogbGEgaW1hZ2VuLCB0YWwgeSBjb21vIGxvIGhhY2VcbiMge09wZW5JbWFnZVJ9OjpyZWFkSW1hZ2UoKSBsZWUgYSBtYXRyaXogbyBhcnJheSBsb3MgZm9ybWF0b3MgIC5wbmcsIC5qcGVnLCAuanBnLCAudGlmIC50aWZmXG5gYGAifQ== -->
+<pre class="r"><code>#Crear una palette con el número de colores correspondientes al resultado en kmeans
+# se lee de nuevo la imagen original como raster comun en Large array x, y, 1:3
+# ncrops &lt;-  jpeg::readJPEG(&quot;~/Pictures/balandra.jpg&quot;)
+ncrops &lt;- readImage(imagen) # para no invocar otra librería
+crops.pal &lt;- image_palette(ncrops, n=nclass)
+# Nota: las funciones readJPGE, readPNG leen a matriz la imagen, tal y como lo hace
+# {OpenImageR}::readImage() lee a matriz o array los formatos  .png, .jpeg, .jpg, .tif .tiff</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGV2ZWxzKGNsYXNzLnJhcykgPC0gcmF0LmNsYXNzXG5sZXZlbHBsb3QoY2xhc3MucmFzLCBtYXJnaW49RkFMU0UsXG4gICBjb2wucmVnaW9ucz0gY3JvcHMucGFsWzE6bmNsYXNzXSxcbiAgICMgc2UgcHVlZGVuIHJlYXNpZ25hciBsb3MgY29sb3JlcyBhc8OtIGNvbW8gYWdydXBhciBhc2lnbmFuZG8gZWwgbWlzbW8gYSBkaWZlcmVudGVzIGNsYXNlc1xuICAgIyBjb2wucmVnaW9ucz0gY3JvcHMucGFsW2MoNSw3LDksNCw4LDEwLDIsNCwxLDYpXSxcbiAgICBtYWluID0gXCJMYW5kIENvdmVyIFR5cGVzIGluIGNyb3BzXCIpXG5gYGAifQ== -->
+<pre class="r"><code>levels(class.ras) &lt;- rat.class
+levelplot(class.ras, margin=FALSE,
+   col.regions= crops.pal[1:nclass],
+   # se pueden reasignar los colores así como agrupar asignando el mismo a diferentes clases
+   # col.regions= crops.pal[c(5,7,9,4,8,10,2,4,1,6)],
+    main = &quot;Land Cover Types in crops&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiU2VnbWVudGF0aW9uIG9mIG5hdHVyYWwgY29sb3IgaW1hZ2VzIG9yaWdpbmFsIgpzdWJ0aXRsZTogIiBSUHVicyBieSBSU3R1ZGlvICIKYXV0aG9yOiAiSXZhbiBMaXphcmF6byIKZGF0ZTogIjE1IEp1bmUgMjAyMCIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKRW5zYXlvIGRlIFNlZ21lbnRhY2nDs24gZGUgaW3DoWdlbmVzIFJHQiwgYmFzYWRvIGVuIGVsIGVqZXJjaWNpbyBwdWJsaWNhZG8gcG9yIFtJdmFuIExpemFyYXpvXShodHRwczovL3JwdWJzLmNvbS9pYWxzMnVuL3NlZ21lbnRfcmdiKSBlbiBmb3JtYXRvIGRlIE5vdGVib29rLgoKYGBge3J9CmxpYnJhcnkgKCJyYXN0ZXJWaXMiKSB8PiBzdXBwcmVzc1BhY2thZ2VTdGFydHVwTWVzc2FnZXMoKQpsaWJyYXJ5ICgnT3BlbkltYWdlUicpIHw+IHN1cHByZXNzUGFja2FnZVN0YXJ0dXBNZXNzYWdlcygpCmxpYnJhcnkgKCdSSW1hZ2VQYWxldHRlJykgfD4gc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKCkKbGlicmFyeSgicmFzdGVyIikgfD4gc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKCkKc291cmNlKGZpbGUgPSAiaW5kaWNlc192ZWdldGFjaW9uX1JHQi5SIikKYGBgCgoxLiAgUmVhZGluZyB0aGUgaW1hZ2UgdG8gYW5hbHl6ZQoKVGhlIGltYWdlIGhhcyBiZWVuIGRvd25sb2FkZWQgZnJvbSB0aGUgTkFTQSBFYXJ0aCBPYnNlcnZhdG9yeSB3ZWJzaXRlLiBJdCBpbGx1c3RyYXRlcyB0aGUgZGl2ZXJzZSBhZ3JpY3VsdHVyYWwgbGFuZHNjYXBlIGluIHRoZSB3ZXN0ZXJuIHBhcnQgb2YgTWluYXMgR2VyYWlzIHN0YXRlIGluIEJyYXppbC4KClNlIGxlZSBsYSBpbWFnZW4gYSBhbmFsaXphcjoKCmBgYHtyLCB3YXJuaW5nID0gRkFMU0V9Cihjcm9wcyA8LSBzdGFjaygifi9naXNlcmlhcy9jb25jaGFsaXRvLXZ1ZWxvMi9jb25jaGFsXzEwUS50aWYiKSkKKGNyb3BzIDwtIHN0YWNrKCJ+L2dpc2VyaWFzL2NvbmNoYWxpdG8tdnVlbG8yL1JQdWJzX2Nyb3BzUS50aWYiKSkKYGBgCgpWZW1vcyBsYSBpbWFnZW4gY2FyZ2FkYToKCmBgYHtyfQpwbG90UkdCKGNyb3BzLCAxLCAyLCAzKQpgYGAKCiMjIFRydWUgQ29sb3IgVmVnZXRhdGlvbiBJbmRpY2VzCgpUaGFua3MgdG8gTWF0dGhpYXMgRm9ya2VsIHdlIGNhbiB1c2UgYSBuaWNlIHBhbGV0dGUgZm9yIHZlZ2V0YXRpb24gaW5kaWNlczoKCmBgYHtyfQpjb2xvcmVzIDwtIGZ1bmN0aW9uKG4pIHsKICAgIC5mdW4gPC0gY29sb3JSYW1wUGFsZXR0ZShjKCJjaG9jb2xhdGU0IiwgIm9yYW5nZSIsICJ5ZWxsb3ciLCAiZ3JleSIsICJncmVlbiIsICJncmVlbjMiLCAiZGFya2dyZWVuIikpCiAgICBjb2wgPC0gLmZ1bihuKQogICAgcmV0dXJuKGNvbCkKfQoKYGBgCgpMZXTigJlzIGNhbGN1bGF0ZSB0aGUgRXhHIGluZGV4OgoKYGBge3J9CiMgRm9yIHRoZSBjcm9wcyBpbWFnZSByZWQgPSAxLCBncmVlbj0yLCBibHVlID0gMS4KKGVndmkgPC0gRUdWSShjcm9wcywgMSwgMiwzKSkKCmBgYAoKVmlzdWFsaXphdGlvbiB0aW1lOgoKYGBge3J9CmNvcnRlcyA8LSBzZXEoLTAuMzUsIDEsIGJ5PTAuMSkKY29scyA8LSBjb2xvcmVzKGxlbmd0aChjb3J0ZXMpLTEpCiMjcGxvdChuZHZpdHJlbmQsIDIsIGNvbD1jb2xzLCBicmVha3M9Y2xhc3NicmVha3MpCnBsb3QoZWd2aSwgMSwgY29sID0gY29scywgYnJlYWtzPWNvcnRlcywgbWFpbiA9ICJFeEcgVmVnZXRhdGlvbiBJbmRleCIpCgpgYGAKCkxldOKAmXMgY2FsY3VsYXRlIHRoZSBOR1JESSBpbmRleDoKCmBgYHtyfQojIEZvciB0aGUgY3JvcHMgaW1hZ2UgcmVkID0gMSwgZ3JlZW49MiwgYmx1ZSA9IDEuCihuZ3ZpIDwtIE5HUkRJKGNyb3BzLCAxLCAyLDMpKQoKYGBgCgpWaXN1YWxpemF0aW9uIHRpbWU6CgpgYGB7cn0KY29ydGVzIDwtIHNlcSgtMC4zNSwgMS4wLCBieT0wLjEpCmNvbHMgPC0gY29sb3JlcyhsZW5ndGgoY29ydGVzKS0xKQojI3Bsb3QobmR2aXRyZW5kLCAyLCBjb2w9Y29scywgYnJlYWtzPWNsYXNzYnJlYWtzKQpwbG90KG5ndmksIDEsIGNvbCA9IGNvbHMsIGJyZWFrcz1jb3J0ZXMsIG1haW4gPSAiTkdSREkgVmVnZXRhdGlvbiBJbmRleCIpCgpgYGAKCiMjIDIuIEltYWdlIHNlZ21lbnRhdGlvbgoKTGV04oCZcyByZWFkIHRoZSBpbWFnZSB1c2luZyB0aGUgT3BlbkltYWdlUiBwYWNrYWdlOgoKYGBge3J9ClJHQi5Db2xvciA8LSByZWFkSW1hZ2UoIn4vZ2lzZXJpYXMvY29uY2hhbGl0by12dWVsbzIvY29uY2hhbF8xMC50aWYiKQojUkdCLkNvbG9yIDwtIHJlYWRJbWFnZSgifi9naXNlcmlhcy9jb25jaGFsaXRvLXZ1ZWxvMi9SUHVic19jcm9wcy5qcGciKQojUkdCLkNvbG9yIDwtIFJHQi5Db2xvclssICwgMTozXSAjIGxlZSBjdWF0cm8gY2FwYXMgZW4gbHVnYXIgZGUgdHJlcwpgYGAKCkxldOKAmXMgdXNlIG5vdyBTTElDIGZvciBpbWFnZSBzZWdtZW50YXRpb24uIEZvciBkZXRhaWxlZCBleHBsYW5hdGlvbiBvZiB0aGUgY29kZSBzZWUgdGhlIHBhY2thZ2XigJlzIHZpZ25ldHRlLgoKYGBge3J9ClJlZ2lvbi5zbGljID0gc3VwZXJwaXhlbHMoaW5wdXRfaW1hZ2UgPSBSR0IuQ29sb3IsIG1ldGhvZCA9ICJzbGljIiwgc3VwZXJwaXhlbCA9IDgwLAogICBjb21wYWN0bmVzcyA9IDMwLCByZXR1cm5fc2xpY19kYXRhID0gVFJVRSwKICAgcmV0dXJuX2xhYmVscyA9IFRSVUUsIHdyaXRlX3NsaWMgPSAiIiwKICAgdmVyYm9zZSA9IEZBTFNFKQoKYGBgCgpgYGB7cn0KaW1hZ2VTaG93KFJlZ2lvbi5zbGljJHNsaWNfZGF0YSkKYGBgCgojIyAzLiBEYXRhIGFuYWx5c2lzCgpgYGB7cn0Kc3RyKFJHQi5Db2xvcikKYGBgCgpMZXTigJlzIGdldCBhIG1hdHJpeCB3aXRoIE5HUkRJIHZhbHVlczoKCmBgYHtyfQpuZ3ZpCmVndmkKZWd2aUBkYXRhQHZhbHVlcwpuZ3ZpQGRhdGFAdmFsdWVzCm5ndmkubWF0IDwtIG1hdHJpeChuZ3ZpQGRhdGFAdmFsdWVzLAogICAgICAgICAgICBucm93ID0gbmd2aUBucm93cywKICAgICAgICAgICAgbmNvbCA9IG5ndmlAbmNvbHMsIGJ5cm93ID0gVFJVRSkKbWluKG5ndmkubWF0KQptYXgobmd2aS5tYXQpCmBgYAo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiU2VnbWVudGF0aW9uIG9mIG5hdHVyYWwgY29sb3IgaW1hZ2VzIG9yaWdpbmFsIgpzdWJ0aXRsZTogIiBSUHVicyBieSBSU3R1ZGlvICIKYXV0aG9yOiAiSXZhbiBMaXphcmF6byIKZGF0ZTogIjE1IEp1bmUgMjAyMCIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKRW5zYXlvIGRlIFNlZ21lbnRhY2nDs24gZGUgaW3DoWdlbmVzIFJHQiwgYmFzYWRvIGVuIGVsIGVqZXJjaWNpbyBwdWJsaWNhZG8gcG9yIFtJdmFuIExpemFyYXpvXShodHRwczovL3JwdWJzLmNvbS9pYWxzMnVuL3NlZ21lbnRfcmdiKSBlbiBmb3JtYXRvIGRlIE5vdGVib29rLgoKYGBge3J9CmxpYnJhcnkgKCJyYXN0ZXJWaXMiKSB8PiBzdXBwcmVzc1BhY2thZ2VTdGFydHVwTWVzc2FnZXMoKQpsaWJyYXJ5ICgnT3BlbkltYWdlUicpIHw+IHN1cHByZXNzUGFja2FnZVN0YXJ0dXBNZXNzYWdlcygpCmxpYnJhcnkgKCdSSW1hZ2VQYWxldHRlJykgfD4gc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKCkKbGlicmFyeSgicmFzdGVyIikgfD4gc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKCkKc291cmNlKGZpbGUgPSAiaW5kaWNlc192ZWdldGFjaW9uX1JHQi5SIikKYGBgCgojIzEuIExlZXIgbGEgaW1hZ2VuIHBhcmEgYW5hbGl6YXIKCkxhIGltYWdlbiBoYSBzaWRvIGRlc2NhcmdhZGEgZGVsIHNpdGlvIHdlYiBkZWwgT2JzZXJ2YXRvcmlvIGRlIGxhIFRpZXJyYSBkZSBsYSBOQVNBIC4gSWx1c3RyYSBlbCBkaXZlcnNvIHBhaXNhamUgYWdyw61jb2xhIGVuIGxhIHBhcnRlIG9jY2lkZW50YWwgZGVsIGVzdGFkbyBkZSBNaW5hcyBHZXJhaXMgZW4gQnJhc2lsLgoKU2UgaGFjZSBsYSBhc2lnbmFjacOzbiBkZSBsYSBydXRhIHBhcmEgZ2VuZXJhbGl6YXIKCmBgYHtyfQojIGFzaWduYXIgbGEgaW1hZ2VuIGNvbiBzdSBydXRhIAojIGltYWdlbiA8LSAifi9QaWN0dXJlcy9iYWxhbmRyYS5qcGciCiMgaW1hZ2VuIDwtICJ+L2dpc2VyaWFzL2NvbmNoYWxpdG8tdnVlbG8yL2NvbmNoYWxfMTBRLnRpZiIKaW1hZ2VuIDwtICJ+L2dpc2VyaWFzL2NvbmNoYWxpdG8tdnVlbG8yL1JQdWJzX2Nyb3BzLmpwZyIKYGBgCgpTZSBsZWUgbGEgaW1hZ2VuIGEgYW5hbGl6YXI6CgpgYGB7ciwgd2FybmluZyA9IEZBTFNFfQooY3JvcHMgPC0gc3RhY2soaW1hZ2VuKSkgIyBlcyB1biBSYXN0ZXJTdGFjayBjb24gZXN0cnVjdHVyYSBwYXJhIMOtbmRpY2VzCmBgYAoKVmVtb3MgbGEgaW1hZ2VuIGNhcmdhZGE6CgpgYGB7cn0KcGxvdFJHQihjcm9wcywgMSwgMiwgMykgIyB2aXN1YWxpemEgdW4gUmFzdGVyU3RhY2sKYGBgCgojIyBUcnVlIENvbG9yIFZlZ2V0YXRpb24gSW5kaWNlcwoKVGhhbmtzIHRvIE1hdHRoaWFzIEZvcmtlbCB3ZSBjYW4gdXNlIGEgbmljZSBwYWxldHRlIGZvciB2ZWdldGF0aW9uIGluZGljZXM6CgpgYGB7cn0KY29sb3JlcyA8LSBmdW5jdGlvbihuKSB7CiAgICAuZnVuIDwtIGNvbG9yUmFtcFBhbGV0dGUoYygiY2hvY29sYXRlNCIsICJvcmFuZ2UiLCAieWVsbG93IiwgImdyZXkiLCAiZ3JlZW4iLCAiZ3JlZW4zIiwgImRhcmtncmVlbiIpKQogICAgY29sIDwtIC5mdW4obikKICAgIHJldHVybihjb2wpCn0KCmBgYAoKTGV04oCZcyBjYWxjdWxhdGUgdGhlIEVHIGluZGV4OgoKYGBge3J9CiMgRm9yIHRoZSBjcm9wcyBpbWFnZSByZWQgPSAxLCBncmVlbj0yLCBibHVlID0gMS4KKGVndmkgPC0gRUdWSShjcm9wcywgMSwgMiwzKSkgIyBsb3Mgw61uZGljZXMgcmVncmVzYW4gdW4gUmFzdGVyTGF5ZXIgCgpgYGAKClZpc3VhbGl6YW1vczoKCmBgYHtyfQpjb3J0ZXMgPC0gc2VxKC0wLjM1LCAxLCBieT0wLjEpCmNvbHMgPC0gY29sb3JlcyhsZW5ndGgoY29ydGVzKS0xKQojIHBsb3QoKSBkZXNwbGllZ2EgdW4gUmFzdGVyTGF5ZXIKcGxvdChlZ3ZpLCBjb2wgPSBjb2xzLCBicmVha3M9Y29ydGVzLCBtYWluID0gIkVHIFZlZ2V0YXRpb24gSW5kZXgiKQoKYGBgCgpDYWxjdWxhbW9zIGVsIMOtbmRpY2UgTkdSREk6CgpgYGB7cn0KIyBGb3IgdGhlIGNyb3BzIGltYWdlIHJlZCA9IDEsIGdyZWVuPTIsIGJsdWUgPSAxLgoobmd2aSA8LSBOR1JESShjcm9wcywgMSwgMiwzKSkKCmBgYAoKVmlzdWFsaXphbW9zOgoKYGBge3J9CmNvcnRlcyA8LSBzZXEoLTAuMzUsIDEuMCwgYnk9MC4xKQpjb2xzIDwtIGNvbG9yZXMobGVuZ3RoKGNvcnRlcyktMSkKIyNwbG90KG5kdml0cmVuZCwgMiwgY29sPWNvbHMsIGJyZWFrcz1jbGFzc2JyZWFrcykKcGxvdChuZ3ZpLCBjb2wgPSBjb2xzLCBicmVha3M9Y29ydGVzLCBtYWluID0gIk5HUkRJIFZlZ2V0YXRpb24gSW5kZXgiKQoKYGBgCgojIyAyLiBJbWFnZSBzZWdtZW50YXRpb24KCkxlYW1vcyBsYSBpbWFnZW4gdXNhbmRvIGVsIHBhcXVldGUgT3BlbkltYWdlUjoKCmBgYHtyfQojUkdCLkNvbG9yIDwtIFJHQi5Db2xvclssICwgMTozXSAjIHNpIGxlZSBjdWF0cm8gY2FwYXMgZW4gbHVnYXIgZGUgdHJlcwpSR0IuQ29sb3IgPC0gcmVhZEltYWdlKGltYWdlbikgIyBMYXJnZSBhcnJheQojIE5vdGE6IGxhcyBmdW5jaW9uZXMgcmVhZEpQR0UsIHJlYWRQTkcgbGVlbiBhIG1hdHJpeiBsYSBpbWFnZW4sIHRhbCB5IGNvbW8gbG8gaGFjZQojIHtPcGVuSW1hZ2VSfTo6cmVhZEltYWdlKCkgbGVlIGEgbWF0cml6IG8gYXJyYXkgbG9zIGZvcm1hdG9zICAucG5nLCAuanBlZywgLmpwZywgLnRpZiAudGlmZgpgYGAKClVzZW1vcyBhaG9yYSBTTElDIHBhcmEgbGEgc2VnbWVudGFjacOzbiBkZSBpbcOhZ2VuZXMuIFBhcmEgb2J0ZW5lciB1bmEgZXhwbGljYWNpw7NuIGRldGFsbGFkYSBkZWwgY8OzZGlnbywgY29uc3VsdGFyIGxhIHZpw7FldGEgZGVsIHBhcXVldGUuCgpgYGB7cn0KIyBzdXBlcnBpeGVsIHJlY2liZSB1biBMYXJnZSBhcnJheSBvIGltYWdlbiBlbiBmb3JtYSBkZSBtYXRyaXogY29uIHRyZXMgY2FwYXMgZGUgZm9uZG8KUmVnaW9uLnNsaWMgPSBzdXBlcnBpeGVscyhpbnB1dF9pbWFnZSA9IFJHQi5Db2xvciwgbWV0aG9kID0gInNsaWMiLCBzdXBlcnBpeGVsID0gODAsCiAgIGNvbXBhY3RuZXNzID0gMzAsIHJldHVybl9zbGljX2RhdGEgPSBUUlVFLAogICByZXR1cm5fbGFiZWxzID0gVFJVRSwgd3JpdGVfc2xpYyA9ICIiLAogICB2ZXJib3NlID0gRkFMU0UpCgpgYGAKCmBgYHtyfQppbWFnZVNob3coUmVnaW9uLnNsaWMkc2xpY19kYXRhKQpgYGAKCiMjIDMuIERhdGEgYW5hbHlzaXMKCmBgYHtyfQpzdHIoUkdCLkNvbG9yKQpgYGAKCkxldOKAmXMgZ2V0IGEgbWF0cml4IHdpdGggTkdSREkgdmFsdWVzOgoKYGBge3J9CiMgbmd2aQojIGVndmkKIyBlZ3ZpQGRhdGFAdmFsdWVzCiMgbmd2aUBkYXRhQHZhbHVlcwpuZ3ZpLm1hdCA8LSBtYXRyaXgobmd2aUBkYXRhQHZhbHVlcywKICAgICAgICAgICAgbnJvdyA9IG5ndmlAbnJvd3MsCiAgICAgICAgICAgIG5jb2wgPSBuZ3ZpQG5jb2xzLCBieXJvdyA9IFRSVUUpCiMgbWluKG5ndmkubWF0KQojIG1heChuZ3ZpLm1hdCkKYGBgCgpMYSBmdW5jacOzbiBpbWFnZVNob3coKSB0cmFiYWphIGNvbiBkYXRvcyBxdWUgZXN0w6FuIGVuIGVsIHJhbmdvIGRlIG9jaG8gYml0cyAwIOKAkyAyNTUgbyBlbiBlbCByYW5nbyBbMCwxXSAoZXMgZGVjaXIsIGVsIHJhbmdvIGRlIHggZW50cmUgMCB5IDEgaW5jbHVzaXZlKS4gU2luIGVtYmFyZ28sIG5vIGZ1bmNpb25hIGNvbiB2YWxvcmVzIE5HUlZJIHNpIGVzdG9zIHZhbG9yZXMgc29uIG5lZ2F0aXZvcy4gUG9yIGxvIHRhbnRvLCBlc2NhbGFyZW1vcyBsb3MgdmFsb3JlcyBkZSBOR1JESSBhIFswLDFdLgoKYGBge3J9CiNyZXNjYWxlIGJldHdlZW4gMCBhbmQgMTsgdmVyIGxhIGZ1bmNpb24ge09wZW5JbWFnZVJ9OjpOb3JtYWxpemVPYmplY3QoKSBxdWUgc2UgdXNhIG1hcyBhYmFqbwpub3JtYWxpemUgPC0gZnVuY3Rpb24oeCkgewogIG1pbiA8LSBtaW4oeCkKICBtYXggPC0gbWF4KHgpCiAgcmV0dXJuKDEqICh4IC0gbWluKSAvIChtYXggLSBtaW4pKQp9CmBgYAoKYGBge3J9Cm5ndmkubWF0X25vcm0gPC0gbm9ybWFsaXplKG5ndmkubWF0KQpgYGAKCmBgYHtyfQppbWFnZVNob3cobmd2aS5tYXRfbm9ybSkKYGBgCgpgYGB7cn0Kbmd2aS5kYXRhIDwtIFJHQi5Db2xvcgojIG5ndmkuZGF0YVssLDFdIDwtIG5ndmkubWF0X25vcm0KIyBuZ3ZpLmRhdGFbLCwyXSA8LSBuZ3ZpLm1hdF9ub3JtCiMgbmd2aS5kYXRhWywsM10gPC0gbmd2aS5tYXRfbm9ybQpgYGAKCkVuIGxhIHNpZ3VpZW50ZSBzZWNjacOzbiBkZXNjcmliaXJlbW9zIGPDs21vIGNyZWFyIHVuYSBzZWdtZW50YWNpw7NuIGRlIGltw6FnZW5lcyBkZSBsb3MgZGF0b3MgZGVsIE5HUkRJIHkgY8OzbW8gdXRpbGl6YXIgZWwgYW7DoWxpc2lzIGRlIGNvbmdsb21lcmFkb3MgcGFyYSBjcmVhciB1bmEgY2xhc2lmaWNhY2nDs24gZGVsIHRlcnJlbm8KCiMjIDQuIEltYWdlIGNsYXNzaWZpY2F0aW9uCgpBcXXDrSBzZSBtdWVzdHJhIHVuYSBhcGxpY2FjacOzbiBkZSBsYSBmdW5jacOzbiBzdXBlcnBpeGVscygpIHBhcmEgbGEgY2xhc2lmaWNhY2nDs24gZGUgbGEgY29iZXJ0dXJhIHRlcnJlc3RyZSBkZSBsb3MgZGF0b3MgTkdSREkuCgpgYGB7cn0Kbmd2aS44MCA9IHN1cGVycGl4ZWxzKGlucHV0X2ltYWdlID0gbmd2aS5kYXRhLAogICBtZXRob2QgPSAic2xpYyIsIHN1cGVycGl4ZWwgPSA4MCwKICAgY29tcGFjdG5lc3MgPSAzMCwgcmV0dXJuX3NsaWNfZGF0YSA9IFRSVUUsCiAgIHJldHVybl9sYWJlbHMgPSBUUlVFLCB3cml0ZV9zbGljID0gIiIsCiAgIHZlcmJvc2UgPSBUUlVFKQpgYGAKCmBgYHtyfQppbWFnZVNob3cobmd2aS44MCRzbGljX2RhdGEpCmBgYAoKQXF1w60gbGEgZXN0cnVjdHVyYSBkZWwgb2JqZXRvIG5ndmkuODAuCgpgYGB7ciB9CnN0cihuZ3ZpLjgwKQpgYGAKCkVzIHVuYSBsaXN0YSBjb24gZG9zIGVsZW1lbnRvcywgc2xpY19kYXRhLCB1bmEgbWF0cml6IHRyaWRpbWVuc2lvbmFsIGRlIGRhdG9zIGRlIGNvbG9yIGRlIHDDrXhlbGVzIChubyBub3JtYWxpemFkb3MpIHkgZXRpcXVldGFzLCB1bmEgbWF0cml6IGN1eW9zIGVsZW1lbnRvcyBjb3JyZXNwb25kZW4gYSBsb3MgcMOteGVsZXMgZGUgbGEgaW1hZ2VuLiBFbCBub21icmUgZGVsIHNlZ3VuZG8gZWxlbWVudG8gc3VnaWVyZSBxdWUgcHVlZGUgY29udGVuZXIgdmFsb3JlcyBxdWUgaWRlbnRpZmljYW4gZWwgc3VwZXJww614ZWwgYWwgcXVlIHBlcnRlbmVjZSBjYWRhIHDDrXhlbC4gVmVhbW9zIHNpIGVzdG8gZXMgY2llcnRvLgoKYGBge3J9CnNvcnQodW5pcXVlKGFzLnZlY3RvcihuZ3ZpLjgwJGxhYmVscykpKQpgYGAKCkhheSA3MiBldGlxdWV0YXMgw7puaWNhcy4gQXVucXVlIGxhIGxsYW1hZGEgYSBzdXBlcnBpeGVscygpIGVzcGVjaWZpY8OzIDgwIHN1cGVycMOteGVsZXMsIGxhIGZ1bmNpw7NuIGdlbmVyw7MgNzIuIFBvZGVtb3MgdmVyIHF1w6kgcMOteGVsZXMgdGllbmVuIGVsIHZhbG9yIGRlIGV0aXF1ZXRhIDAgZXN0YWJsZWNpZW5kbyBsb3MgdmFsb3JlcyBkZSB0b2RvcyBsb3MgZGVtw6FzIHDDrXhlbGVzIGVuIFsyNTUsIDI1NSwgMjU1XSwgbG8gcXVlIHNlIHRyYXphcsOhIGNvbW8gYmxhbmNvLgoKYGBge3J9ClIwIDwtIG5ndmkuODAKZm9yIChpIGluIDE6bnJvdyhSMCRsYWJlbCkpCiAgICBmb3IgKGogaW4gMTpuY29sKFIwJGxhYmVsKSkKICAgICAgIGlmIChSMCRsYWJlbFtpLGpdICE9IDApCiAgICAgICAgICBSMCRzbGljX2RhdGFbaSxqLF0gPC0gYygyNTUsMjU1LDI1NSkKYGBgCgpgYGB7cn0KaW1hZ2VTaG93KFIwJHNsaWNfZGF0YSkKCmBgYAoKTGEgb3BlcmFjacOzbiBhw61zbGEgZWwgc3VwZXJww614ZWwgZW4gbGEgZXNxdWluYSBzdXBlcmlvciBkZXJlY2hhIGRlIGxhIGltYWdlbiwganVudG8gY29uIGxhIHBvcmNpw7NuIGNvcnJlc3BvbmRpZW50ZSBkZWwgbMOtbWl0ZS4gUG9kZW1vcyB1dGlsaXphciBmw6FjaWxtZW50ZSBlc3RlIGVuZm9xdWUgcGFyYSBkZXRlcm1pbmFyIHF1w6kgdmFsb3IgZGUgbmd2aS44MFwkbGFiZWwgY29ycmVzcG9uZGUgYSBxdcOpIHN1cGVycMOteGVsLiBBaG9yYSB0cmF0ZW1vcyBjb24gZWwgbMOtbWl0ZS4gVW5hIHBlcXVlw7FhIGV4cGxvcmFjacOzbiBkZWwgb2JqZXRvIG5ndmkuODAgc3VnaWVyZSBxdWUgbG9zIHDDrXhlbGVzIGVuIGVsIGzDrW1pdGUgdGllbmVuIGxvcyB0cmVzIGNvbXBvbmVudGVzIGlndWFsZXMgYSBjZXJvLiBBaXNsYW1vcyB5IHRyYXphbW9zIHRvZG9zIGVzb3MgcMOteGVsZXMgY29sb3JlYW5kbyB0b2RvcyBsb3MgZGVtw6FzIHDDrXhlbGVzIGRlIGJsYW5jby4KCmBgYHtyfQpCZHJ5IDwtIG5ndmkuODAKICBmb3IgKGkgaW4gMTpucm93KEJkcnkkbGFiZWwpKQogICBmb3IgKGogaW4gMTpuY29sKEJkcnkkbGFiZWwpKQogICAgIGlmICghKEJkcnkkc2xpY19kYXRhW2ksaiwxXSA9PSAwICYKICAgICBCZHJ5JHNsaWNfZGF0YVtpLGosMl0gPT0gMCAmCiAgICAgICBCZHJ5JHNsaWNfZGF0YVtpLGosM10gPT0gMCkpCiAgICAgICBCZHJ5JHNsaWNfZGF0YVtpLGosXSA8LSBjKDI1NSwyNTUsMjU1KQoKYGBgCgpgYGB7cn0KQmRyeS5ub3JtIDwtIE5vcm1hbGl6ZU9iamVjdChCZHJ5JHNsaWNfZGF0YSkKaW1hZ2VTaG93KEJkcnkkc2xpY19kYXRhKQoKYGBgCgpMYSBmaWd1cmEgbXVlc3RyYSBxdWUgZWZlY3RpdmFtZW50ZSBzZSBoYW4gaWRlbnRpZmljYWRvIGxvcyBww614ZWxlcyBsw61taXRlLiBIYXkgcXVlIHRlbmVyIGVuIGN1ZW50YSBxdWUgbGEgZnVuY2nDs24gaW1hZ2VTaG93KCkgbXVlc3RyYSBlc3RvcyBww614ZWxlcyBlbiBibGFuY28gY29uIHVuIGJvcmRlIG5lZ3JvLCBlbiBsdWdhciBkZSBuZWdybyBwdXJvLgoKSGFiaWVuZG8gcmVhbGl6YWRvIHVuIGFuw6FsaXNpcyBwcmVsaW1pbmFyLCBwb2RlbW9zIG9yZ2FuaXphciBudWVzdHJvIHByb2Nlc28gZGUgc2VnbWVudGFjacOzbiBlbiBkb3MgcGFzb3MuCgpFbCBwcmltZXIgcGFzbyBzZXLDoSByZWVtcGxhemFyIGNhZGEgdW5vIGRlIGxvcyBzdXBlcnDDrXhlbGVzIGdlbmVyYWRvcyBwb3IgbGEgZnVuY2nDs24gc3VwZXJwaXhlbHMoKSBkZSBPcGVuSW1hZ2VSIHBvciB1bm8gZW4gZWwgcXVlIGNhZGEgcMOteGVsIHRlbmdhIGVsIG1pc21vIHZhbG9yLCBjb3JyZXNwb25kaWVudGUgYSB1bmEgbWVkaWRhIGRlIHRlbmRlbmNpYSBjZW50cmFsIChwLiBlai4sIGxhIG1lZGlhLCBtZWRpYW5hIG8gbW9kYSkgZGVsIHN1cGVycMOteGVsIG9yaWdpbmFsLgoKRWwgc2VndW5kbyBwYXNvIHNlcsOhIHV0aWxpemFyIGVsIHByb2NlZGltaWVudG8gZGUgYWdydXBhbWllbnRvIG5vIHN1cGVydmlzYWRvIGRlIEstbWVkaWFzIHBhcmEgb3JnYW5pemFyIGxvcyBzdXBlcnDDrXhlbGVzIGRlbCBwYXNvIDEgZW4gdW4gY29uanVudG8gZGUgZ3J1cG9zIHkgZGFybGUgYSBjYWRhIGdydXBvIHVuIHZhbG9yIGNvcnJlc3BvbmRpZW50ZSBhIHVuYSBtZWRpZGEgZGUgdGVuZGVuY2lhIGNlbnRyYWwgZGVsIGdydXBvLgoKVXRpbGl6YXJlbW9zIGxhIGZ1bmNpw7NuIG1ha2Uuc2VnbWVudHMoKSBwYXJhIHJlYWxpemFyIGxhIHNlZ21lbnRhY2nDs24uIEVsIHByaW1lciBhcmd1bWVudG8gZGUgbWFrZS5zZWdtZW50cygpIGVzIGVsIG9iamV0byBkZSBzdXBlcnDDrXhlbGVzIHkgZWwgc2VndW5kbyBlcyBsYSBtZWRpZGEgZnVuY2lvbmFsIGRlIHRlbmRlbmNpYSBjZW50cmFsLiBBdW5xdWUgZW4gZXN0ZSBjYXNvIGNhZGEgdW5vIGRlIGxvcyB0cmVzIGNvbG9yZXMgZGVsIG9iamV0byBuZ3ZpLjgwIHRpZW5lIGxvcyBtaXNtb3MgdmFsb3JlcywgZXN0byBwdWVkZSBubyBzZXIgY2llcnRvIHBhcmEgdG9kYXMgbGFzIGFwbGljYWNpb25lcywgcG9yIGxvIHF1ZSBsYSBmdW5jacOzbiBhbmFsaXphIGNhZGEgY29sb3IgcG9yIHNlcGFyYWRvLgoKTGEgZnVuY2nDs24sIGVzY3JpdGEgcG9yIFJpY2hhcmQgUGxhbnQsIGVzIGxhIHNpZ3VpZW50ZToKCmBgYHtyfQojIElkZW50aWZ5IGEgbWVhc3VyZSBvZiBjZW50cmFsIHRlbmRlbmN5IG9mIGVhY2ggc3VwZXJwaXhlbAptYWtlLnNlZ21lbnRzIDwtIGZ1bmN0aW9uKHgsIGZ0bil7CiMgVGhlIGFyZ3VtZW50IGZ0biBpcyBhbnkgZnVuY3Rpb25hbCBtZWFzdXJlIG9mIGNlbnRyYWwgdGVuZGVuY3kKICAgeiA8LSB4CiMgRm9yIGVhY2ggaWRlbnRpZmllZCBzdXBlcnBpeGVsLCBjb21wdXRlIG1lYXN1cmUgb2YgY2VudHJhbCB0ZW5kZW5jeQogICBmb3IgKGsgaW4gdW5pcXVlKGFzLnZlY3Rvcih4JGxhYmVscykpKXsKIyBJZGVudGlmeSBtZW1iZXJzIG9mIHRoZSBzdXBlcnBpeGVsIGhhdmluZyB0aGUgZ2l2ZW4gbGFiZWwKICAgICAgaW4uc3VwZXIgPC0gbWF0cml4KDAsIG5yb3coeCRsYWJlbCksIG5jb2woeCRsYWJlbCkpCiAgICAgIGZvciAoaSBpbiAxOm5yb3coeCRsYWJlbCkpCiAgICAgICAgIGZvciAoaiBpbiAxOm5jb2woeCRsYWJlbCkpCiAgICAgICAgICAgIGlmICh4JGxhYmVsW2ksal0gPT0gaykKICAgICAgICAgICAgICAgaW4uc3VwZXJbaSxqXSA8LSAxCiNJZGVudGlmeSB0aGUgYm91bmRhcnkgY2VsbHMgYXMgaGF2aW5nIGFsbCB2YWx1ZXMgMAogICAgICBvbi5ib3VuZCA8LSBtYXRyaXgoMCwgbnJvdyh4JGxhYmVsKSwgbmNvbCh4JGxhYmVsKSkKICAgICAgZm9yIChpIGluIDE6bnJvdyh4JGxhYmVsKSkKICAgICAgICAgZm9yIChqIGluIDE6bmNvbCh4JGxhYmVsKSkKICAgICAgICAgICAgaWYgKGluLnN1cGVyW2ksal0gPT0gMSl7CiAgICAgICAgICAgICAgIGlmICh4JHNsaWNfZGF0YVtpLGosMV0gPT0gMCAmIHgkc2xpY19kYXRhW2ksaiwyXSA9PSAwIAogICAgICAgICAgICAgICAgICAmIHgkc2xpY19kYXRhW2ksaiwzXSA9PSAwKQogICAgICAgICAgICAgICAgICAgICBvbi5ib3VuZFtpLGpdIDwtIDEKICAgICAgICAgfQojSWRlbnRpZnkgdGhlIHN1cGVycGl4ZWwgY2VsbHMgbm90IG9uIHRoZSBib3VuZGFyeQogICAgICBzdXAuZGF0YSA8LSBtYXRyaXgoMCwgbnJvdyh4JGxhYmVsKSwgbmNvbCh4JGxhYmVsKSkKICAgICAgICAgZm9yIChpIGluIDE6bnJvdyh4JGxhYmVsKSkKICAgICAgICAgZm9yIChqIGluIDE6bmNvbCh4JGxhYmVsKSkKICAgICAgICAgICAgaWYgKGluLnN1cGVyW2ksal0gPT0gMSAmIG9uLmJvdW5kW2ksal0gPT0gMCkKICAgICAgICAgICAgICAgc3VwLmRhdGFbaSxqXSA8LSAxCiMgQ29tcHV0ZSB0aGUgbWVhc3VyZSBvZiBjZW50cmFsIHRlbmRlbmN5IG9mIHRoZSBjZWxscyBpbiBSLCBHLCBCCiAgICAgIGZvciAobiBpbiAxOjMpewojIENyZWF0ZSBhIG1hdHJpeCBNIG9mIHRoZSBzYW1lIHNpemUgYXMgdGhlIG1hdHJpeCBvZiBzdXBlcnBpeGVsIHZhbHVlcwogICAgICAgICBNIDwtIG1hdHJpeCgwLCBkaW0oeCRzbGljX2RhdGEpWzFdLCBkaW0oeCRzbGljX2RhdGEpWzJdKSAKICAgICAgICAgZm9yIChpIGluIDE6bnJvdyh4JGxhYmVsKSkKICAgICAgICAgICAgZm9yIChqIGluIDE6bmNvbCh4JGxhYmVsKSkKIyBBc3NpZ24gdG8gTSB0aGUgdmFsdWVzIGluIHRoZSBzdXBlcnBpeGVsCiAgICAgICAgICAgICAgIGlmIChzdXAuZGF0YVtpLGpdID09IDEpIE1baSxqXSA8LSB4JHNsaWNfZGF0YVtpLGosbl0KICAgICAgICAgIGlmIChsZW5ndGgoTVt3aGljaChNID4gMCAmIE0gPCAyNTUpXSkgPiAwKQojIENvbXB1dGUgdGhlIG1lYXN1cmUgb2YgY2VudHJhbCB0ZW5kZW5jeQogICAgICAgICAgICBmdG4ubiA8LSByb3VuZChmdG4oTVt3aGljaChNID4gMCAmIE0gPCAyNTUpXSksIDApCiAgICAgICAgIGVsc2UKICAgICAgICAgICAgZnRuLm4gPC0gMAogICAgICAgICBmb3IgKGkgaW4gMTpucm93KHgkbGFiZWwpKQogICAgICAgICAgICBmb3IgKGogaW4gMTpuY29sKHgkbGFiZWwpKQogICAgICAgICAgICAgICBpZiAoaW4uc3VwZXJbaSxqXSA9PSAxKSB6JHNsaWNfZGF0YVtpLGosbl0gPC0gZnRuLm4KICAgICAgICAgICB9CiAgICAgIH0KICAgcmV0dXJuKHopCiAgIH0KYGBgCgpBcXXDrSBlc3TDoSBsYSBhcGxpY2FjacOzbiBkZSBlc2EgZnVuY2nDs24gYWwgb2JqZXRvIG5ndmkuODAgY29uIGVsIHNlZ3VuZG8gYXJndW1lbnRvIGNvbmZpZ3VyYWRvIGNvbW8gbWVhbi4KClBvZGVtb3MgdmVyIGVsIHJlc3VsdGFkby4KCmBgYHtyfQpuZ3ZpLm1lYW5zIDwtIG1ha2Uuc2VnbWVudHMobmd2aS44MCwgbWVhbikKaW1hZ2VTaG93KG5ndmkubWVhbnMkc2xpY19kYXRhKQpgYGAKCkVsIHNpZ3VpZW50ZSBwYXNvIGVzIGRlc2Fycm9sbGFyIGdydXBvcyBxdWUgcmVwcmVzZW50ZW4gdGlwb3MgZGUgY29iZXJ0dXJhIHRlcnJlc3RyZSBpZGVudGlmaWNhYmxlcy4gRW4gdW4gcHJveWVjdG8gcmVhbCwgZWwgcHJvY2VkaW1pZW50byBzZXLDrWEgcmVjb3BpbGFyIHVuIGNvbmp1bnRvIGRlIGRhdG9zIHJlYWxlcyBkZWwgc2l0aW8sIHBlcm8gZXNhIG9wY2nDs24gbm8gZXN0w6EgZGlzcG9uaWJsZSBwYXJhIG5vc290cm9zLiBFbiBzdSBsdWdhciwgdHJhYmFqYXJlbW9zIGNvbiBsYSByZXByb2R1Y2Npw7NuIGVuIGNvbG9yIHJlYWwgZGUgbGEgZm90byBkZWwgZWplbXBsby4KCkxhIGNvYmVydHVyYSBkZWwgc3VlbG8gc2UgcHVlZGUgc3ViZGl2aWRpciB1dGlsaXphbmRvIEstbWVkaWFzIGVuIGN1YWxxdWllciBuw7ptZXJvIGRlIHRpcG9zLiBUZW5nYSBlbiBjdWVudGEgcXVlIG5vIHNlIGhhIGludGVycHJldGFkbyBhcXXDrSBsYSByZWxhY2nDs24gZW50cmUgbG9zIGdydXBvcyBkZSBLLW1lZGlhcyB5IGxhcyBjbGFzZXMgZGUgY29iZXJ0dXJhIGRlbCBzdWVsbyBleGlzdGVudGVzIGVuIGVsIHNpdGlvIGRlbCBlamVtcGxvLiBTaW4gZW1iYXJnbywgZW4gdW5hIGFwbGljYWNpw7NuIHJlYWwsIGVzdGEgdGFyZWEgZXMgaW1wcmVzY2luZGlibGUuCgpgYGB7cn0Kc2V0LnNlZWQoMTIzKQojIE9KTzogZW4gbGEgZnVuY2nDs24ga21lYW5zIHNlIGVzdGFibGVjZSBlbCBuw7ptZXJvIGRlIGNsYXNlcyBzdWJzZWN1ZW50ZXMKbmNsYXNzIDwtIDEwCm5ndmkuY2x1cyA8LSAga21lYW5zKGFzLnZlY3RvcihuZ3ZpLm1lYW5zJHNsaWNfZGF0YVssLDFdKSwgbmNsYXNzKQp2ZWdlLmNsYXNzIDwtIG1hdHJpeChuZ3ZpLmNsdXMkY2x1c3RlciwKICAgICAgICAgICAgICAgICAgICAgbnJvdyA9IG5ndmlAbnJvd3MsIAogICAgICAgICAgICAgICAgICAgICBuY29sID0gbmd2aUBuY29scywgYnlyb3cgPSBGQUxTRSkKY2xhc3MucmFzIDwtIHJhc3Rlcih2ZWdlLmNsYXNzLCAKICAgICAgICAgICAgICAgICAgICB4bW4gPSBjcm9wc0BleHRlbnRAeG1pbiwKICAgICAgICAgICAgICAgICAgICB4bXggPSBjcm9wc0BleHRlbnRAeG1heCwgCiAgICAgICAgICAgICAgICAgICAgeW1uID0gY3JvcHNAZXh0ZW50QHltaW4sIAogICAgICAgICAgICAgICAgICAgIHlteCA9IGNyb3BzQGV4dGVudEB5bWF4LCAKICAgICAgICAgICAgICAgICAgICBjcnMgPSBjcnMoY3JvcHMpKQpgYGAKCkEgY29udGludWFjacOzbiBwb2RlbW9zIHVzYXIgbGEgZnVuY2nDs24ge3Jhc3Rlcn0gcmF0aWZ5KCkgcGFyYSBhc2lnbmFyIG5pdmVsZXMgZGUgZmFjdG9yZXMgZGVzY3JpcHRpdm9zIGEgbG9zIGdydXBvcyBvIGNsYXNlcyBkZWZpbmlkYXMuCgpgYGB7cn0KY2xhc3MucmFzIDwtIHJhdGlmeShjbGFzcy5yYXMpCnJhdC5jbGFzcyA8LSBsZXZlbHMoY2xhc3MucmFzKVtbMV1dCmBgYAoKYGBge3J9CiMgZXZlbnR1YWxtZW50ZSwgc2UgYXNpZ25hbiBldGlxdWV0YXMgcGFyYSBjYWRhIHVuYSBkZSBsYXMgY2xhc2VzIGRlbCByZXN1bHRhZG87CiMgZW4gZWwgY2FzbyBkZWwgZWplbXBsbywgc2UgYXBsaWNhOgojIHJhdC5jbGFzcyRsYW5kY292ZXIgPC0gYygiTEMgMTAiLCAiTEMgMDkiLCAiTEMgMDgiLCAiTEMgMDciLCAiTEMgMDYiLCAiTEMgMDUiLCAiTEMgMDQiLCAiTEMgMDMiLCAiTEMgMDIiLCAiTEMgMDEiKQpyYXQuY2xhc3MkbGFuZGNvdmVyIDwtIHBhc3RlKCJDbGFzZSIsIG5jbGFzczoxKQpgYGAKCmBgYHtyfQojQ3JlYXIgdW5hIHBhbGV0dGUgY29uIGVsIG7Dum1lcm8gZGUgY29sb3JlcyBjb3JyZXNwb25kaWVudGVzIGFsIHJlc3VsdGFkbyBlbiBrbWVhbnMKIyBzZSBsZWUgZGUgbnVldm8gbGEgaW1hZ2VuIG9yaWdpbmFsIGNvbW8gcmFzdGVyIGNvbXVuIGVuIExhcmdlIGFycmF5IHgsIHksIDE6MwojIG5jcm9wcyA8LSAganBlZzo6cmVhZEpQRUcoIn4vUGljdHVyZXMvYmFsYW5kcmEuanBnIikKbmNyb3BzIDwtIHJlYWRJbWFnZShpbWFnZW4pICMgcGFyYSBubyBpbnZvY2FyIG90cmEgbGlicmVyw61hCmNyb3BzLnBhbCA8LSBpbWFnZV9wYWxldHRlKG5jcm9wcywgbj1uY2xhc3MpCiMgTm90YTogbGFzIGZ1bmNpb25lcyByZWFkSlBHRSwgcmVhZFBORyBsZWVuIGEgbWF0cml6IGxhIGltYWdlbiwgdGFsIHkgY29tbyBsbyBoYWNlCiMge09wZW5JbWFnZVJ9OjpyZWFkSW1hZ2UoKSBsZWUgYSBtYXRyaXogbyBhcnJheSBsb3MgZm9ybWF0b3MgIC5wbmcsIC5qcGVnLCAuanBnLCAudGlmIC50aWZmCmBgYAoKYGBge3J9CmxldmVscyhjbGFzcy5yYXMpIDwtIHJhdC5jbGFzcwpsZXZlbHBsb3QoY2xhc3MucmFzLCBtYXJnaW49RkFMU0UsCiAgIGNvbC5yZWdpb25zPSBjcm9wcy5wYWxbMTpuY2xhc3NdLAogICAjIHNlIHB1ZWRlbiByZWFzaWduYXIgbG9zIGNvbG9yZXMgYXPDrSBjb21vIGFncnVwYXIgYXNpZ25hbmRvIGVsIG1pc21vIGEgZGlmZXJlbnRlcyBjbGFzZXMKICAgIyBjb2wucmVnaW9ucz0gY3JvcHMucGFsW2MoNSw3LDksNCw4LDEwLDIsNCwxLDYpXSwKICAgIG1haW4gPSAiTGFuZCBDb3ZlciBUeXBlcyBpbiBjcm9wcyIpCmBgYAo=</div>
 
 
 

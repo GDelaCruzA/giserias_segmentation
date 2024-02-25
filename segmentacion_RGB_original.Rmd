@@ -1,9 +1,11 @@
 ---
 title: "Segmentation of natural color images original"
-subtitle: " RPubs by RStudio "
 author: "Ivan Lizarazo"
 date: "15 June 2020"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
+subtitle: ' RPubs by RStudio '
 ---
 
 Ensayo de Segmentación de imágenes RGB, basado en el ejercicio publicado por [Ivan Lizarazo](https://rpubs.com/ials2un/segment_rgb) en formato de Notebook.
@@ -16,21 +18,29 @@ library("raster") |> suppressPackageStartupMessages()
 source(file = "indices_vegetacion_RGB.R")
 ```
 
-1.  Reading the image to analyze
+##1. Leer la imagen para analizar
 
-The image has been downloaded from the NASA Earth Observatory website. It illustrates the diverse agricultural landscape in the western part of Minas Gerais state in Brazil.
+La imagen ha sido descargada del sitio web del Observatorio de la Tierra de la NASA . Ilustra el diverso paisaje agrícola en la parte occidental del estado de Minas Gerais en Brasil.
+
+Se hace la asignación de la ruta para generalizar
+
+```{r}
+# asignar la imagen con su ruta 
+# imagen <- "~/Pictures/balandra.jpg"
+# imagen <- "~/giserias/conchalito-vuelo2/conchal_10Q.tif"
+imagen <- "~/giserias/conchalito-vuelo2/RPubs_crops.jpg"
+```
 
 Se lee la imagen a analizar:
 
 ```{r, warning = FALSE}
-(crops <- stack("~/giserias/conchalito-vuelo2/conchal_10Q.tif"))
-(crops <- stack("~/giserias/conchalito-vuelo2/RPubs_cropsQ.tif"))
+(crops <- stack(imagen)) # es un RasterStack con estructura para índices
 ```
 
 Vemos la imagen cargada:
 
-```{r}
-plotRGB(crops, 1, 2, 3)
+```{r, warning=FALSE}
+plotRGB(crops, 1, 2, 3) # visualiza un RasterStack
 ```
 
 ## True Color Vegetation Indices
@@ -46,55 +56,57 @@ colores <- function(n) {
 
 ```
 
-Let’s calculate the ExG index:
+Let’s calculate the EG index:
 
-```{r}
+```{r, warning=FALSE}
 # For the crops image red = 1, green=2, blue = 1.
-(egvi <- EGVI(crops, 1, 2,3))
+(egvi <- EGVI(crops, 1, 2,3)) # los índices regresan un RasterLayer 
 
 ```
 
-Visualization time:
+Visualizamos:
 
 ```{r}
 cortes <- seq(-0.35, 1, by=0.1)
 cols <- colores(length(cortes)-1)
-##plot(ndvitrend, 2, col=cols, breaks=classbreaks)
-plot(egvi, 1, col = cols, breaks=cortes, main = "ExG Vegetation Index")
+# plot() despliega un RasterLayer
+plot(egvi, col = cols, breaks=cortes, main = "EG Vegetation Index")
 
 ```
 
-Let’s calculate the NGRDI index:
+Calculamos el índice NGRDI:
 
-```{r}
+```{r, warning=FALSE}
 # For the crops image red = 1, green=2, blue = 1.
 (ngvi <- NGRDI(crops, 1, 2,3))
 
 ```
 
-Visualization time:
+Visualizamos:
 
 ```{r}
 cortes <- seq(-0.35, 1.0, by=0.1)
 cols <- colores(length(cortes)-1)
 ##plot(ndvitrend, 2, col=cols, breaks=classbreaks)
-plot(ngvi, 1, col = cols, breaks=cortes, main = "NGRDI Vegetation Index")
+plot(ngvi, col = cols, breaks=cortes, main = "NGRDI Vegetation Index")
 
 ```
 
 ## 2. Image segmentation
 
-Let’s read the image using the OpenImageR package:
+Leamos la imagen usando el paquete OpenImageR:
 
 ```{r}
-RGB.Color <- readImage("~/giserias/conchalito-vuelo2/conchal_10.tif")
-#RGB.Color <- readImage("~/giserias/conchalito-vuelo2/RPubs_crops.jpg")
-#RGB.Color <- RGB.Color[, , 1:3] # lee cuatro capas en lugar de tres
+#RGB.Color <- RGB.Color[, , 1:3] # si lee cuatro capas en lugar de tres
+RGB.Color <- readImage(imagen) # Large array
+# Nota: las funciones readJPGE, readPNG leen a matriz la imagen, tal y como lo hace
+# {OpenImageR}::readImage() lee a matriz o array los formatos  .png, .jpeg, .jpg, .tif .tiff
 ```
 
-Let’s use now SLIC for image segmentation. For detailed explanation of the code see the package’s vignette.
+Usemos ahora SLIC para la segmentación de imágenes. Para obtener una explicación detallada del código, consultar la viñeta del paquete.
 
-```{r}
+```{r, warning=FALSE}
+# superpixel recibe un Large array o imagen en forma de matriz con tres capas de fondo
 Region.slic = superpixels(input_image = RGB.Color, method = "slic", superpixel = 80,
    compactness = 30, return_slic_data = TRUE,
    return_labels = TRUE, write_slic = "",
@@ -115,13 +127,229 @@ str(RGB.Color)
 Let’s get a matrix with NGRDI values:
 
 ```{r}
-ngvi
-egvi
-egvi@data@values
-ngvi@data@values
+# ngvi
+# egvi
+# egvi@data@values
+# ngvi@data@values
 ngvi.mat <- matrix(ngvi@data@values,
             nrow = ngvi@nrows,
             ncol = ngvi@ncols, byrow = TRUE)
-min(ngvi.mat)
-max(ngvi.mat)
+# min(ngvi.mat)
+# max(ngvi.mat)
+```
+
+La función imageShow() trabaja con datos que están en el rango de ocho bits 0 – 255 o en el rango [0,1] (es decir, el rango de x entre 0 y 1 inclusive). Sin embargo, no funciona con valores NGRVI si estos valores son negativos. Por lo tanto, escalaremos los valores de NGRDI a [0,1].
+
+```{r}
+#rescale between 0 and 1; ver la funcion {OpenImageR}::NormalizeObject() que se usa mas abajo
+normalize <- function(x) {
+  min <- min(x)
+  max <- max(x)
+  return(1* (x - min) / (max - min))
+}
+```
+
+```{r}
+# como en algunos índices se obtienen valores negativos, es necesario normalizar 
+# todos los valores a la escala 0 a 1
+ngvi.mat_norm <- normalize(ngvi.mat)
+```
+
+```{r}
+imageShow(ngvi.mat_norm)
+```
+
+```{r}
+ngvi.data <- RGB.Color # original_0 no ejecuta las siguientes tres líneas
+ngvi.data[,,1] <- ngvi.mat_norm # para obtener la clasificación con base en el VI
+ngvi.data[,,2] <- ngvi.mat_norm
+ngvi.data[,,3] <- ngvi.mat_norm
+```
+
+En la siguiente sección describiremos cómo crear una segmentación de imágenes de los datos del NGRDI y cómo utilizar el análisis de conglomerados para crear una clasificación del terreno
+
+## 4. Image classification
+
+Aquí se muestra una aplicación de la función superpixels() para la clasificación de la cobertura terrestre de los datos NGRDI.
+
+```{r, warning=FALSE}
+ngvi.80 = superpixels(input_image = ngvi.data,
+   method = "slic", superpixel = 80,
+   compactness = 30, return_slic_data = TRUE,
+   return_labels = TRUE, write_slic = "",
+   verbose = TRUE)
+```
+
+```{r}
+imageShow(ngvi.80$slic_data)
+```
+
+Aquí la estructura del objeto ngvi.80.
+
+```{r }
+str(ngvi.80)
+```
+
+Es una lista con dos elementos, slic_data, una matriz tridimensional de datos de color de píxeles (no normalizados) y etiquetas, una matriz cuyos elementos corresponden a los píxeles de la imagen. El nombre del segundo elemento sugiere que puede contener valores que identifican el superpíxel al que pertenece cada píxel. Veamos si esto es cierto.
+
+```{r}
+sort(unique(as.vector(ngvi.80$labels)))
+```
+
+Hay `r max(ngvi.80$labels)` etiquetas únicas. Aunque la llamada a superpixels() especificó 80 superpíxeles, la función generó `r max(ngvi.80$labels)`. Podemos ver qué píxeles tienen el valor de etiqueta 0 estableciendo los valores de todos los demás píxeles en [255, 255, 255], lo que se trazará como blanco.
+
+```{r}
+R0 <- ngvi.80
+for (i in 1:nrow(R0$label))
+    for (j in 1:ncol(R0$label))
+       if (R0$label[i,j] != 0)
+          R0$slic_data[i,j,] <- c(255,255,255)
+```
+
+```{r}
+imageShow(R0$slic_data)
+
+```
+
+La operación aísla el superpíxel en la esquina superior derecha de la imagen, junto con la porción correspondiente del límite. Podemos utilizar fácilmente este enfoque para determinar qué valor de ngvi.80\$label corresponde a qué superpíxel. Ahora tratemos con el límite. Una pequeña exploración del objeto ngvi.80 sugiere que los píxeles en el límite tienen los tres componentes iguales a cero. Aislamos y trazamos todos esos píxeles coloreando todos los demás píxeles de blanco.
+
+```{r}
+Bdry <- ngvi.80
+  for (i in 1:nrow(Bdry$label))
+   for (j in 1:ncol(Bdry$label))
+     if (!(Bdry$slic_data[i,j,1] == 0 &
+     Bdry$slic_data[i,j,2] == 0 &
+       Bdry$slic_data[i,j,3] == 0))
+       Bdry$slic_data[i,j,] <- c(255,255,255)
+
+```
+
+```{r}
+Bdry.norm <- NormalizeObject(Bdry$slic_data)
+imageShow(Bdry$slic_data)
+
+```
+
+La figura muestra que efectivamente se han identificado los píxeles límite. Hay que tener en cuenta que la función imageShow() muestra estos píxeles en blanco con un borde negro, en lugar de negro puro.
+
+Habiendo realizado un análisis preliminar, podemos organizar nuestro proceso de segmentación en dos pasos.
+
+El primer paso será reemplazar cada uno de los superpíxeles generados por la función superpixels() de OpenImageR por uno en el que cada píxel tenga el mismo valor, correspondiente a una medida de tendencia central (p. ej., la media, mediana o moda) del superpíxel original.
+
+El segundo paso será utilizar el procedimiento de agrupamiento no supervisado de K-medias para organizar los superpíxeles del paso 1 en un conjunto de grupos y darle a cada grupo un valor correspondiente a una medida de tendencia central del grupo.
+
+Utilizaremos la función make.segments() para realizar la segmentación. El primer argumento de make.segments() es el objeto de superpíxeles y el segundo es la medida funcional de tendencia central. Aunque en este caso cada uno de los tres colores del objeto ngvi.80 tiene los mismos valores, esto puede no ser cierto para todas las aplicaciones, por lo que la función analiza cada color por separado.
+
+La función, escrita por Richard Plant, es la siguiente:
+
+```{r}
+# Identify a measure of central tendency of each superpixel
+make.segments <- function(x, ftn){
+# The argument ftn is any functional measure of central tendency
+   z <- x
+# For each identified superpixel, compute measure of central tendency
+   for (k in unique(as.vector(x$labels))){
+# Identify members of the superpixel having the given label
+      in.super <- matrix(0, nrow(x$label), ncol(x$label))
+      for (i in 1:nrow(x$label))
+         for (j in 1:ncol(x$label))
+            if (x$label[i,j] == k)
+               in.super[i,j] <- 1
+#Identify the boundary cells as having all values 0
+      on.bound <- matrix(0, nrow(x$label), ncol(x$label))
+      for (i in 1:nrow(x$label))
+         for (j in 1:ncol(x$label))
+            if (in.super[i,j] == 1){
+               if (x$slic_data[i,j,1] == 0 & x$slic_data[i,j,2] == 0 
+                  & x$slic_data[i,j,3] == 0)
+                     on.bound[i,j] <- 1
+         }
+#Identify the superpixel cells not on the boundary
+      sup.data <- matrix(0, nrow(x$label), ncol(x$label))
+         for (i in 1:nrow(x$label))
+         for (j in 1:ncol(x$label))
+            if (in.super[i,j] == 1 & on.bound[i,j] == 0)
+               sup.data[i,j] <- 1
+# Compute the measure of central tendency of the cells in R, G, B
+      for (n in 1:3){
+# Create a matrix M of the same size as the matrix of superpixel values
+         M <- matrix(0, dim(x$slic_data)[1], dim(x$slic_data)[2]) 
+         for (i in 1:nrow(x$label))
+            for (j in 1:ncol(x$label))
+# Assign to M the values in the superpixel
+               if (sup.data[i,j] == 1) M[i,j] <- x$slic_data[i,j,n]
+          if (length(M[which(M > 0 & M < 255)]) > 0)
+# Compute the measure of central tendency
+            ftn.n <- round(ftn(M[which(M > 0 & M < 255)]), 0)
+         else
+            ftn.n <- 0
+         for (i in 1:nrow(x$label))
+            for (j in 1:ncol(x$label))
+               if (in.super[i,j] == 1) z$slic_data[i,j,n] <- ftn.n
+           }
+      }
+   return(z)
+   }
+```
+
+Aquí está la aplicación de esa función al objeto ngvi.80 con el segundo argumento configurado como mean.
+
+Podemos ver el resultado.
+
+```{r}
+ngvi.means <- make.segments(ngvi.80, mean)
+imageShow(ngvi.means$slic_data)
+```
+
+El siguiente paso es desarrollar grupos que representen tipos de cobertura terrestre identificables. En un proyecto real, el procedimiento sería recopilar un conjunto de datos reales del sitio, pero esa opción no está disponible para nosotros. En su lugar, trabajaremos con la reproducción en color real de la foto del ejemplo.
+
+La cobertura del suelo se puede subdividir utilizando K-medias en cualquier número de tipos. Tenga en cuenta que no se ha interpretado aquí la relación entre los grupos de K-medias y las clases de cobertura del suelo existentes en el sitio del ejemplo. Sin embargo, en una aplicación real, esta tarea es imprescindible.
+
+```{r}
+set.seed(123)
+# OJO: en la función kmeans se establece el número de clases subsecuentes
+nclass <- 10
+ngvi.clus <-  kmeans(as.vector(ngvi.means$slic_data[,,1]), nclass)
+vege.class <- matrix(ngvi.clus$cluster,
+                     nrow = ngvi@nrows, 
+                     ncol = ngvi@ncols, byrow = FALSE)
+class.ras <- raster(vege.class, 
+                    xmn = crops@extent@xmin,
+                    xmx = crops@extent@xmax, 
+                    ymn = crops@extent@ymin, 
+                    ymx = crops@extent@ymax, 
+                    crs = crs(crops))
+```
+
+A continuación podemos usar la función {raster} ratify() para asignar niveles de factores descriptivos a los grupos o clases definidas.
+
+```{r}
+class.ras <- ratify(class.ras)
+rat.class <- levels(class.ras)[[1]]
+```
+
+```{r}
+# eventualmente, se asignan etiquetas para cada una de las clases del resultado;
+# en el caso del ejemplo, se aplica:
+# rat.class$landcover <- c("LC 10", "LC 09", "LC 08", "LC 07", "LC 06", "LC 05", "LC 04", "LC 03", "LC 02", "LC 01")
+rat.class$landcover <- paste("Clase", nclass:1)
+```
+
+```{r}
+#Crear una palette con el número de colores correspondientes al resultado en kmeans
+# se lee de nuevo la imagen original como raster comun en Large array x, y, 1:3
+# ncrops <-  jpeg::readJPEG("~/Pictures/balandra.jpg")
+ncrops <- readImage(imagen) # para no invocar otra librería
+crops.pal <- image_palette(ncrops, n=nclass)
+# Nota: las funciones readJPGE, readPNG leen a matriz la imagen, tal y como lo hace
+# {OpenImageR}::readImage() lee a matriz o array los formatos  .png, .jpeg, .jpg, .tif .tiff
+```
+
+```{r}
+levels(class.ras) <- rat.class
+levelplot(class.ras, margin=FALSE,
+   col.regions= crops.pal[1:nclass],
+   # se pueden reasignar los colores así como agrupar asignando el mismo a diferentes clases
+   # col.regions= crops.pal[c(5,7,9,4,8,10,2,4,1,6)],
+    main = "Land Cover Types in crops")
 ```
