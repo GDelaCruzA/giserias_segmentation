@@ -2,6 +2,10 @@
 #
 library(terra) |> suppressPackageStartupMessages()
 library(OpenImageR) |> suppressPackageStartupMessages()
+library(raster) |> suppressPackageStartupMessages()
+library (RImagePalette) |> suppressPackageStartupMessages()
+library (rasterVis) |> suppressPackageStartupMessages()
+
 
 source(file = "indices_vegetacion_RGB.R")
 
@@ -61,8 +65,8 @@ make.segments <- function(x, ftn){
 }
 
 # definir la imagen a trabajar
-# imagen <- "~/giserias/conchalito-vuelo2/conchal_10Q.tif"
-imagen <- "~/giserias/conchalito-vuelo2/RPubs_crops.jpg"
+imagen <- "~/giserias/conchalito-vuelo2/conchal_10Q.tif"
+# imagen <- "~/giserias/conchalito-vuelo2/RPubs_crops.jpg"
 
 # se lee la imagen
 # r = rast("~/giserias/conchalito-vuelo2/RPubs_crops.jpg")
@@ -74,7 +78,8 @@ array_img <- readImage(imagen) # la carga como array
 RGB(rast_img) <- 1:3
 # la función plot de rast_img sin la función RGB() despliega todas las bandas en una sola imagen
 # a partir del tif original (conchal_10.tif)
-plot(rast_img) 
+plot(rast_img)
+imageShow(array_img)
 
 # se calculan los índices para la imagen
 rast_img_egvi <- EGVI(rast_img)
@@ -112,13 +117,15 @@ egvi.mat <- matrix(rasterlayer_egvi@data@values,
                    nrow = rasterlayer_egvi@nrows,
                    ncol = rasterlayer_egvi@ncols, byrow = TRUE)
 
-min(egvi.mat)
-max(egvi.mat)
+min(egvi.mat, na.rm = TRUE)
+max(egvi.mat, na.rm = TRUE)
 
 # como en los índices tenemos valores negativos, tenemos que normalizar valores a 0 - 1
 egvi.mat.norm <- NormalizeObject(egvi.mat)
 min(egvi.mat.norm)
 max(egvi.mat.norm)
+# como la matriz tiene NaN, los sustituimos por 1 (blanco)
+egvi.mat.norm[is.na(egvi.mat.norm)] = 1
 imageShow(egvi.mat.norm)
 
 # regresamos los valores normalizados al array para hacer la segmentación; las tres bandas
@@ -129,33 +136,41 @@ egvi.data[,,2] <- egvi.mat.norm
 egvi.data[,,3] <- egvi.mat.norm
 
 # segmentamos la imagen del índice de vegetación para iniciar la clasificación
-egvi.80 = superpixels(input_image = egvi.data,
+egvi.superpx = superpixels(input_image = egvi.data,
                       method = "slic", 
-                      superpixel = 80,
-                      compactness = 30, 
+                      superpixel = 200,
+                      compactness = 20, 
                       return_slic_data = TRUE,
                       return_labels = TRUE, 
                       write_slic = "",
                       verbose = TRUE)
 
 # vemos como queda
-imageShow(egvi.80$slic_data)
+imageShow(egvi.superpx$slic_data)
 
 # vemos las clases definidas por la segmentación; los parámteros son el número de 
 # superpixels y lo compacto de los mismos
 #
-sort(unique(as.vector(egvi.80$labels))) # por sus etiquetas
+sort(unique(as.vector(egvi.superpx$labels))) # por sus etiquetas
 
-# los homogeneizamos por la media de cada segmento
-egvi.means <- make.segments(egvi.80, mean)
+# los homogeneizamos por la media de cada segmento; esta es la función más larga
+egvi.means <- make.segments(egvi.superpx, mean)
 imageShow(egvi.means$slic_data)
+
+v1 <- as.vector(egvi.means$slic_data[,, 1])
+v2 <- as.vector(egvi.means$slic_data[,, 2])
+v3 <- as.vector(egvi.means$slic_data[,, 3])
+mat_km <- cbind(v1,v2,v3)
 
 # Luego los segmentos se aglomeran por su semejanza en la media para formar un número
 # menor de clases que las definidas para los superpixels
 set.seed(123)
 # OJO: en la función kmeans se establece el número de clases subsecuentes
-nclass <- 10
-egvi.clus <-  kmeans(as.vector(egvi.means$slic_data[,,1]), nclass)
+nclass <- 15
+# kmeans se calcula sobre la maytriz de los valores de las tres bandas en lugar de solo una
+# egvi.clus <-  kmeans(as.vector(egvi.means$slic_data[,,1]), nclass)
+
+egvi.clus <-  kmeans(mat_km, nclass)
 vege.class <- matrix(egvi.clus$cluster,
                      nrow = rasterlayer_egvi@nrows, 
                      ncol = rasterlayer_egvi@ncols, byrow = FALSE)
@@ -175,8 +190,8 @@ rat.class <- levels(class.ras)[[1]]
 rat.class$landcover <- paste("Clase", nclass:1)
 
 # extraemos la paleta de colores de la imagen
-img.pal <- image_palette(array_img, n=nclass)
-
+# img.pal <- image_palette(array_img, n=nclass, volume = TRUE)
+img.pal <- rampa(nclass)
 # la desplegamos
 levels(class.ras) <- rat.class
 levelplot(class.ras, margin=FALSE,
@@ -184,3 +199,6 @@ levelplot(class.ras, margin=FALSE,
           # se pueden reasignar los colores así como agrupar asignando el mismo a diferentes clases
           # col.regions= crops.pal[c(5,7,9,4,8,10,2,4,1,6)],
           main = "Clases de cobertura en la imagen")
+
+# luego las regiones hay que convertirlas a polígonos...
+# ver: {raster}::rasterToPolygons y {terra}::as.polygons
