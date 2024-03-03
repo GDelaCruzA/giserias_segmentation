@@ -71,19 +71,19 @@ imagen <- "~/giserias/conchalito-vuelo2/conchal_10Q.tif"
 # se lee la imagen
 # r = rast("~/giserias/conchalito-vuelo2/RPubs_crops.jpg")
 # warning = FALSE
-rast_img <- rast(imagen) # la carga como SpatRaster
+spatrast_img <- rast(imagen) # la carga como SpatRaster
 array_img <- readImage(imagen) # la carga como array 
 
 # Se definen las bandas que se interpretarían como RGB y se visualiza
-RGB(rast_img) <- 1:3
-# la función plot de rast_img sin la función RGB() despliega todas las bandas en una sola imagen
+RGB(spatrast_img) <- 1:3
+# la función plot de spatrast_img sin la función RGB() despliega todas las bandas en una sola imagen
 # a partir del tif original (conchal_10.tif)
-plot(rast_img)
+plot(spatrast_img)
 imageShow(array_img)
 
-# se calculan los índices para la imagen
-rast_img_egvi <- EGVI(rast_img)
-plot(rast_img_egvi, main = "EG Vegetation Index sin rampa") # grafica cruda
+# se calculan los índices para la imagen, se obtienen los valores crudos
+spatrast_img_egvi <- EGVI(spatrast_img)
+plot(spatrast_img_egvi, main = "EG Vegetation Index sin rampa") # grafica cruda
 
 # se guarda la imagen del índice como tif
 # writeRaster(rast_img_egvi, filename = "conchal_egvi.tif")
@@ -92,11 +92,11 @@ plot(rast_img_egvi, main = "EG Vegetation Index sin rampa") # grafica cruda
 cortes <- seq(-0.35, 1, by=0.1)
 cols <- rampa(length(cortes)-1)
 
-plot(rast_img_egvi, col = cols, breaks=cortes, main = "EG Vegetation Index con rampa")
+plot(spatrast_img_egvi, col = cols, breaks=cortes, main = "EG Vegetation Index con rampa")
 
 # otro índice
-rast_img_tcvi <- TCVI(rast_img)
-plot(rast_img_tcvi, col = cols, breaks=cortes, main = "TC Vegetation Index con rampa")
+spatrast_img_tcvi <- TCVI(spatrast_img)
+plot(spatrast_img_tcvi, col = cols, breaks=cortes, main = "TC Vegetation Index con rampa")
 
 # probar con los otros índices y rampas de color
 # ver si esta transformación a grises se puede usar
@@ -110,7 +110,7 @@ plot(rast_img_tcvi, col = cols, breaks=cortes, main = "TC Vegetation Index con r
 ## Segmentación de imágenes
 
 # se tiene que convertir de SpatRaster (los VI) a RasterLayer
-rasterlayer_egvi <- raster(rast_img_egvi)
+rasterlayer_egvi <- raster(spatrast_img_egvi)
 plot(rasterlayer_egvi, col = cols, breaks=cortes, main = "del SpatRaster Vegetation Index con rampa")
 
 egvi.mat <- matrix(rasterlayer_egvi@data@values,
@@ -122,20 +122,21 @@ max(egvi.mat, na.rm = TRUE)
 
 # como en los índices tenemos valores negativos, tenemos que normalizar valores a 0 - 1
 egvi.mat.norm <- NormalizeObject(egvi.mat)
-min(egvi.mat.norm)
-max(egvi.mat.norm)
+min(egvi.mat.norm, na.rm = TRUE)
+max(egvi.mat.norm, na.rm = TRUE)
 # como la matriz tiene NaN, los sustituimos por 1 (blanco)
 egvi.mat.norm[is.na(egvi.mat.norm)] = 1
-imageShow(egvi.mat.norm)
+imageShow(egvi.mat.norm) # representación en tonos de grises del índice, una banda
 
 # regresamos los valores normalizados al array para hacer la segmentación; las tres bandas
 # tendrán el mismo valor del índice de vegetación
-egvi.data <- array_img
+egvi.data <- array_img # la imagen RGB original o... la capa del índice repetida 
 egvi.data[,,1] <- egvi.mat.norm # para obtener la clasificación con base en el VI
 egvi.data[,,2] <- egvi.mat.norm
 egvi.data[,,3] <- egvi.mat.norm
 
-# segmentamos la imagen del índice de vegetación para iniciar la clasificación
+# segmentamos la imagen original o la del índice de vegetación para iniciar 
+# la clasificación; la imagen en formato de array con tres bandas
 egvi.superpx = superpixels(input_image = egvi.data,
                       method = "slic", 
                       superpixel = 200,
@@ -153,28 +154,33 @@ imageShow(egvi.superpx$slic_data)
 #
 sort(unique(as.vector(egvi.superpx$labels))) # por sus etiquetas
 
-# los homogeneizamos por la media de cada segmento; esta es la función más larga
+# los homogeneizamos por la media de los pixels en cada segmento; 
+# esta es la función más larga y tardada
 egvi.means <- make.segments(egvi.superpx, mean)
 imageShow(egvi.means$slic_data)
 
-v1 <- as.vector(egvi.means$slic_data[,, 1])
-v2 <- as.vector(egvi.means$slic_data[,, 2])
-v3 <- as.vector(egvi.means$slic_data[,, 3])
-mat_km <- cbind(v1,v2,v3)
+# para agrupar los segmentos más afines, los acomodamos en una matriz
+mat_km <- cbind(as.vector(egvi.means$slic_data[,, 1]), 
+                as.vector(egvi.means$slic_data[,, 2]),
+                as.vector(egvi.means$slic_data[,, 3]))
 
-# Luego los segmentos se aglomeran por su semejanza en la media para formar un número
-# menor de clases que las definidas para los superpixels
+# Luego los segmentos se aglomeran por su semejanza en la media para 
+# formar un número menor de clases que las definidas para los superpixels
 set.seed(123)
-# OJO: en la función kmeans se establece el número de clases subsecuentes
+# OJO: para la función kmeans se establece el número de clases subsiguientes
 nclass <- 15
-# kmeans se calcula sobre la maytriz de los valores de las tres bandas en lugar de solo una
+# kmeans se calcula sobre la matriz de los valores de las tres bandas en 
+# lugar de solo una como en el original, de tal manera que podemos procesar
+# las tres bandas de otros resultados; i.e. superpixels
 # egvi.clus <-  kmeans(as.vector(egvi.means$slic_data[,,1]), nclass)
 
 egvi.clus <-  kmeans(mat_km, nclass)
+# el resultado de k-means (los grupos y que superpixels pertenecen a cada uno) lo
+# acomodamos como una matriz (de nuevo)
 vege.class <- matrix(egvi.clus$cluster,
                      nrow = rasterlayer_egvi@nrows, 
                      ncol = rasterlayer_egvi@ncols, byrow = FALSE)
-# con las clases se construye la imagen resultante
+# con las clases se construye la imagen raster resultante
 class.ras <- raster(vege.class, 
                     xmn = 0,
                     xmx = ncol(array_img),
@@ -182,15 +188,16 @@ class.ras <- raster(vege.class,
                     ymx = nrow(array_img),
                     crs = "")
 
-# las hacemos factores
+# cada valor en la imagen se codifica como factores
 class.ras <- ratify(class.ras)
-rat.class <- levels(class.ras)[[1]]
+rat.class <- levels(class.ras)[[1]] # se asignan sus niveles
 
 # eventualmente, se asignan etiquetas para cada una de las clases del resultado;
 rat.class$landcover <- paste("Clase", nclass:1)
 
-# extraemos la paleta de colores de la imagen
+# extraemos la paleta de colores de la imagen, en el original, pero no es práctico
 # img.pal <- image_palette(array_img, n=nclass, volume = TRUE)
+# se usa la rampa de color con el número de clases
 img.pal <- rampa(nclass)
 # la desplegamos
 levels(class.ras) <- rat.class
@@ -202,3 +209,17 @@ levelplot(class.ras, margin=FALSE,
 
 # luego las regiones hay que convertirlas a polígonos...
 # ver: {raster}::rasterToPolygons y {terra}::as.polygons
+
+# vía {raster}; se tiene que definir la acción para cada clase kmeans
+poly.raster <- rasterToPolygons(class.ras, fun = function(x){x == 5})
+plot(poly.raster, col = "red")
+
+# en {terra} la función rast() convierte un RasterLayer a (class.ras) a SpatRaster
+# que se requiere para la función as.polygons()
+# 
+spatraster_class.ras <- rast(class.ras)
+poly.spatraster <- as.polygons(spatraster_class.ras)
+plot(poly.spatraster)
+
+# revisar como guardar los rasters como tif y los vectoriales como shp
+# 
