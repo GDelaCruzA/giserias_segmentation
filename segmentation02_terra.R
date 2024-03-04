@@ -221,5 +221,112 @@ spatraster_class.ras <- rast(class.ras)
 poly.spatraster <- as.polygons(spatraster_class.ras)
 plot(poly.spatraster)
 
-# revisar como guardar los rasters como tif y los vectoriales como shp
+# revisar como guardar los rasters como geotif y los vectoriales como shp
 # 
+# ejemplo con {SuperpixelImageSepmentation} en:}
+# https://cran.r-project.org/web/packages/OpenImageR/vignettes/Image_segmentation_superpixels_clustering.html
+# 1, Image segmentation based on superpixels (SLIC, SLICO) and Affinity Propagation (AP)
+
+library(SuperpixelImageSegmentation)
+library(OpenImageR)
+imagen <- "~/giserias/conchalito-vuelo2/conchal_10Q.tif"
+array_img <- readImage(imagen) # la carga como array
+imageShow(array_img)
+init = Image_Segmentation$new()
+
+superpix = init$spixel_segmentation(input_image = array_img, 
+                               superpixel = 600, 
+                               AP_data = TRUE,
+                               use_median = TRUE, 
+                               sim_wL = 3, # 3 
+                               sim_wA = 10, 
+                               sim_wB = 10,
+                               sim_color_radius = 0.5, # 10
+                               verbose = TRUE)
+
+# color_radius y clusters
+# 10 - 4; 5 - 5; 2 - 7; 0.5 - 359; 1 - 10
+
+str(superpix)
+imageShow(superpix$AP_image_data)
+
+# 2. Superpixels, AP and Kmeans (or Mini-Batch-Kmeans)
+
+superpix_km = init$spixel_segmentation(input_image = array_img, 
+                                  superpixel = 600, 
+                                  AP_data = TRUE,
+                                  use_median = TRUE, 
+                                  sim_wL = 3, 
+                                  sim_wA = 10, 
+                                  sim_wB = 10,
+                                  sim_color_radius = 1, # 10
+                                  kmeans_method = "kmeans",
+                                  kmeans_initializer = "kmeans++",
+                                  kmeans_num_init = 3, 
+                                  kmeans_max_iters = 300,
+                                  verbose = TRUE)
+
+# la imagen muestra el resultado basedo en Superpixels + AP,
+imageShow(superpix_km$AP_image_data)
+
+# la imagen baseda en Superpixels + AP + Kmeans (vector quantization),
+
+imageShow(superpix_km$KMeans_image_data)
+
+# Superpixels + AP + Mini-Batch-Kmeans
+
+superpix_mbkm = init$spixel_segmentation(input_image = array_img, 
+                                    superpixel = 600, 
+                                    AP_data = TRUE,
+                                    use_median = TRUE, 
+                                    sim_wL = 3, 
+                                    sim_wA = 10, 
+                                    sim_wB = 10,
+                                    sim_color_radius = 1, # 10
+                                    kmeans_method = "mini_batch_kmeans",
+                                    kmeans_initializer = "kmeans++",
+                                    kmeans_num_init = 3, 
+                                    kmeans_max_iters = 300,
+                                    minib_kmeans_batch = 10, 
+                                    minib_kmeans_init_fraction = 0.75,
+                                    verbose = TRUE)
+
+imageShow(superpix_mbkm$KMeans_image_data)
+
+# los tipos encontrados con kmeans
+num_kclass <- dim(superpix_mbkm$centr)[1]
+sort(unique(as.vector(superpix_mbkm$KMeans_clusters[1,])))
+
+# 3. los grupos identificados
+# el resultado de k-means (los grupos y que superpixels pertenecen a cada uno) lo
+# acomodamos como una matriz (de nuevo)
+vege.class <- matrix(superpix_mbkm$KMeans_clusters,
+                     nrow = dim(superpix_mbkm$AP_image_data)[1], 
+                     ncol = dim(superpix_mbkm$AP_image_data)[2], 
+                     byrow = FALSE)
+# con las clases se construye la imagen raster resultante
+class.ras <- raster(vege.class, 
+                    xmn = 0,
+                    xmx = ncol(array_img),
+                    ymn = 0,
+                    ymx = nrow(array_img),
+                    crs = "")
+
+# cada valor en la imagen se codifica como factores
+class.ras <- ratify(class.ras)
+rat.class <- levels(class.ras)[[1]] # se asignan sus niveles
+
+# eventualmente, se asignan etiquetas para cada una de las clases del resultado;
+rat.class$landcover <- paste("Clase", num_kclass:1)
+
+# extraemos la paleta de colores de la imagen, en el original, pero no es práctico
+# img.pal <- image_palette(array_img, n=nclass, volume = TRUE)
+# se usa la rampa de color con el número de clases
+img.pal <- rampa(num_kclass)
+# la desplegamos
+levels(class.ras) <- rat.class
+levelplot(class.ras, margin=FALSE,
+          col.regions= img.pal[1:num_kclass],
+          # se pueden reasignar los colores así como agrupar asignando el mismo a diferentes clases
+          # col.regions= crops.pal[c(5,7,9,4,8,10,2,4,1,6)],
+          main = "Superpixels + AP + Mini-Batch-Kmeans")
