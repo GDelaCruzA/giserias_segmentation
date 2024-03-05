@@ -330,3 +330,14 @@ levelplot(class.ras, margin=FALSE,
           # se pueden reasignar los colores así como agrupar asignando el mismo a diferentes clases
           # col.regions= crops.pal[c(5,7,9,4,8,10,2,4,1,6)],
           main = "Superpixels + AP + Mini-Batch-Kmeans")
+
+# The writeImage function writes a 2- or 3-dimensional object (matrix, 
+# data frame or array where the third dimension is equal to 3) in a user 
+# specified image format. The supported types are .png, .jpeg, .jpg, .tiff.
+
+OpenImageR::writeImage(im, file_name = 'my_image.jpeg')
+
+terra::writeRaster(SpatRaster_image, etc) # guarda la imagen
+
+raster::writeRaster() # múltiples formats incluyendo geotiff
+
