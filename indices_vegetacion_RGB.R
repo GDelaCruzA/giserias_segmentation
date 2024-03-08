@@ -145,3 +145,14 @@ NORB <- function(img, r = 1, g = 2, b = 3) {
   return(indice)
 }
 
+# normaliza cada una de las bandas RGB de una imagen
+NormalizaColor <- function(img, r = 1, g = 2, b = 3){
+  rband <- img[[r]]
+  gband <- img[[g]]
+  bband <- img[[b]]
+  img[[r]] <- rband/(rband + gband + bband)
+  img[[g]] <- gband/(rband + gband + bband)
+  img[[b]] <- bband/(rband + gband + bband)
+  return(img)
+}
+
