@@ -65,7 +65,7 @@ make.segments <- function(x, ftn){
 }
 
 # definir la imagen a trabajar
-imagen <- "~/giserias/conchalito-vuelo2/conchal_10Q.tif"
+imagen <- "~/giserias/conchalito-vuelo2/conchal_10.tif"
 # imagen <- "~/giserias/conchalito-vuelo2/RPubs_crops.jpg"
 
 # se lee la imagen
